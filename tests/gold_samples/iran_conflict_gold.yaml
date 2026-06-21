@@ -1,0 +1,151 @@
+# Iran conflict news-market matching gold sample
+# Phase 5 baseline set for ontology extraction + impact mapping regression.
+# Each case defines one news item, one market condition, and the expected matching result.
+
+board_id: iran_conflict
+version: phase5_baseline_v1
+cases:
+  - id: peace_deal_direct_yes
+    market_condition: permanent_peace_deal
+    market_question: "US x Iran permanent peace deal by April 30, 2026?"
+    news_title: "US and Iran sign permanent peace agreement in Geneva"
+    news_text: "Washington and Tehran signed a comprehensive peace agreement after weeks of negotiations, according to officials."
+    expected:
+      matched: true
+      event_type: peace_deal_signed
+      evidence_type: direct
+      direction: 1
+    note: "A signed US-Iran peace agreement is direct YES evidence for the permanent peace deal market."
+
+  - id: diplomatic_meeting_direct_yes
+    market_condition: diplomatic_meeting
+    market_question: "US x Iran diplomatic meeting by April 30, 2026?"
+    news_title: "US and Iran envoys meet in Oman for direct talks"
+    news_text: "American and Iranian officials held face-to-face diplomatic talks in Muscat mediated by Oman."
+    expected:
+      matched: true
+      event_type: diplomatic_contact
+      evidence_type: direct
+      direction: 1
+    note: "A direct meeting between US and Iran envoys is a resolving event for the diplomatic meeting market."
+
+  - id: peace_deal_context_from_meeting
+    market_condition: permanent_peace_deal
+    market_question: "US x Iran permanent peace deal by April 30, 2026?"
+    news_title: "US and Iran envoys meet in Oman for direct talks"
+    news_text: "American and Iranian officials held face-to-face diplomatic talks in Muscat mediated by Oman."
+    expected:
+      matched: true
+      event_type: diplomatic_contact
+      evidence_type: context
+      direction: 1
+    note: "Diplomatic contact helps peace prospects but is not itself a permanent peace deal."
+
+  - id: war_declaration_direct_yes
+    market_condition: war_declaration
+    market_question: "Formal war declaration between US/Israel and Iran by April 30, 2026?"
+    news_title: "Iran formally declares war after parliament vote"
+    news_text: "Iranian state media said the government is officially at war following a formal war declaration."
+    expected:
+      matched: true
+      event_type: war_declared
+      evidence_type: direct
+      direction: 1
+    note: "Formal declaration is direct YES evidence for a war declaration market."
+
+  - id: war_declaration_negative_for_peace
+    market_condition: permanent_peace_deal
+    market_question: "US x Iran permanent peace deal by April 30, 2026?"
+    news_title: "Iran formally declares war after parliament vote"
+    news_text: "Iranian state media said the government is officially at war following a formal war declaration."
+    expected:
+      matched: true
+      event_type: war_declared
+      evidence_type: direct
+      direction: -1
+    note: "Formal war is direct negative evidence for permanent peace."
+
+  - id: hormuz_direct_negative
+    market_condition: hormuz_traffic_restored
+    market_question: "Strait of Hormuz shipping traffic restored by April 30, 2026?"
+    news_title: "IRGC seizes oil tanker in Strait of Hormuz"
+    news_text: "Maritime traffic was disrupted after Iran's Revolutionary Guard Navy detained a tanker near the Strait of Hormuz."
+    expected:
+      matched: true
+      event_type: maritime_incident
+      evidence_type: direct
+      direction: -1
+    note: "A tanker seizure in Hormuz is direct negative evidence for traffic restoration."
+
+  - id: military_operations_end_direct_yes
+    market_condition: military_operations_end
+    market_question: "US ends military operations against Iran by April 30, 2026?"
+    news_title: "US announces end of military operations against Iran"
+    news_text: "The Pentagon said combat operations against Iran have concluded and US forces will stand down after military operations end."
+
+    expected:
+      matched: true
+      event_type: military_operations_end
+      evidence_type: direct
+      direction: 1
+    note: "Official end of operations is direct YES evidence for the military operations end market."
+
+  - id: regime_fall_direct_yes
+    market_condition: regime_fall
+    market_question: "Will the Iranian regime fall by May 31?"
+    news_title: "Mass protests lead to collapse of Iranian government"
+    news_text: "Reports from Tehran say the Iranian government was overthrown after security forces abandoned the supreme leader."
+    expected:
+      matched: true
+      event_type: regime_change
+      evidence_type: direct
+      direction: 1
+    note: "Government collapse in Iran is direct YES evidence for regime fall."
+
+  - id: nuclear_deal_direct_yes
+    market_condition: nuclear_deal_restored
+    market_question: "Iran nuclear deal restored by April 30, 2026?"
+    news_title: "US and Iran reach new nuclear agreement"
+    news_text: "Diplomats said Washington and Tehran reached a nuclear accord that restores core JCPOA limits."
+    expected:
+      matched: true
+      event_type: nuclear_deal
+      evidence_type: direct
+      direction: 1
+    note: "A restored/new nuclear agreement is direct YES evidence for nuclear deal restoration."
+
+  - id: nuclear_weapon_direct_yes
+    market_condition: iran_nuclear_weapon
+    market_question: "Iran develops or tests a nuclear weapon by December 31, 2026?"
+    news_title: "IAEA reports Iran has enough weapons-grade uranium for a nuclear weapon"
+    news_text: "The agency said Iran's nuclear breakout time has shortened after highly enriched uranium reached weapons-grade levels."
+    expected:
+      matched: true
+      event_type: nuclear_development
+      evidence_type: direct
+      direction: 1
+    note: "Weapons-grade enrichment is direct positive evidence for an Iran nuclear weapon market."
+
+  - id: gaza_war_irrelevant_to_us_iran_peace
+    market_condition: permanent_peace_deal
+    market_question: "US x Iran permanent peace deal by April 30, 2026?"
+    news_title: "State of war: Israel escalates attacks in Gaza"
+    news_text: "Israeli officials described a state of war in Gaza as fighting intensified around Rafah. The report did not mention Iran or the United States."
+    expected:
+      matched: false
+      event_type: null
+      evidence_type: null
+      direction: 0
+    note: "Gaza-only war language should not become direct evidence for a US-Iran peace market."
+
+  - id: lebanon_airstrike_irrelevant_to_regime_fall
+    market_condition: regime_fall
+    market_question: "Will the Iranian regime fall by May 31?"
+    news_title: "Lebanon accuses Israel of targeting journalist killed in air strike"
+    news_text: "Lebanese officials accused Israel of an air strike in southern Lebanon. The article did not mention Iran's government, Tehran, or Khamenei."
+    expected:
+      matched: false
+      event_type: null
+      evidence_type: null
+      direction: 0
+    note: "A Lebanon-only air strike is not direct evidence for Iranian regime collapse."

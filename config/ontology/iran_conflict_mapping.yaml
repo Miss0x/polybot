@@ -1,0 +1,541 @@
+# ============================================================================
+# Iran Conflict Impact Mapping — 美伊冲突事件×市场条件映射矩阵
+# ============================================================================
+#
+# 核心查表逻辑：
+#   给定一条新闻的 event_type 和一个市场的 market_condition，
+#   查表得到 direction / strength / evidence_type。
+#
+# 字段说明：
+#   event_type:       事件类型 id（来自 events.yaml）
+#   market_condition:  市场条件 id（来自 market_conditions.yaml）
+#   direction:         +1（支持 YES）/ -1（支持 NO）/ 0（中性/不确定）
+#   strength:          strong / medium / weak
+#   evidence_type:     direct（直接证据）/ context（背景信号）
+#   note:              人类可读的映射理由
+#
+# 未列出的 event_type × market_condition 组合默认为 irrelevant。
+# ============================================================================
+
+board_id: iran_conflict
+
+mappings:
+
+  # ══════════════════════════════════════════════════════════════
+  # military_strike → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: military_strike
+    market_condition: permanent_peace_deal
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "军事打击直接破坏和平协议前景"
+
+  - event_type: military_strike
+    market_condition: diplomatic_meeting
+    direction: -1
+    strength: medium
+    evidence_type: direct
+    note: "军事打击通常导致外交渠道中断，但不绝对"
+
+  - event_type: military_strike
+    market_condition: regime_fall
+    direction: 0
+    strength: weak
+    evidence_type: context
+    note: "军事打击可能削弱也可能巩固政权，方向不确定"
+
+  - event_type: military_strike
+    market_condition: hormuz_traffic_restored
+    direction: -1
+    strength: medium
+    evidence_type: direct
+    note: "军事冲突升级通常导致海峡航运进一步受阻"
+
+  - event_type: military_strike
+    market_condition: military_operations_end
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "新的军事打击意味着军事行动远未结束"
+
+  - event_type: military_strike
+    market_condition: war_declaration
+    direction: +1
+    strength: medium
+    evidence_type: direct
+    note: "军事打击升级增加正式宣战的可能性"
+
+  - event_type: military_strike
+    market_condition: nuclear_deal_restored
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "军事冲突中核协议几乎不可能恢复"
+
+  # ══════════════════════════════════════════════════════════════
+  # war_declared → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: war_declared
+    market_condition: permanent_peace_deal
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "正式宣战是和平协议的直接否定"
+
+  - event_type: war_declared
+    market_condition: diplomatic_meeting
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "宣战状态下外交会面极不可能"
+
+  - event_type: war_declared
+    market_condition: military_operations_end
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "宣战意味着军事行动全面展开"
+
+  - event_type: war_declared
+    market_condition: war_declaration
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "直接结算事件"
+
+  - event_type: war_declared
+    market_condition: hormuz_traffic_restored
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "战争状态下海峡航运不可能恢复正常"
+
+  - event_type: war_declared
+    market_condition: nuclear_deal_restored
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "战争状态下核协议不可能恢复"
+
+  # ══════════════════════════════════════════════════════════════
+  # proxy_attack → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: proxy_attack
+    market_condition: permanent_peace_deal
+    direction: -1
+    strength: weak
+    evidence_type: context
+    note: "代理人攻击增加紧张但不直接阻止国家间和平协议"
+
+  - event_type: proxy_attack
+    market_condition: war_declaration
+    direction: +1
+    strength: weak
+    evidence_type: context
+    note: "代理人攻击可能升级但通常不直接导致宣战"
+
+  - event_type: proxy_attack
+    market_condition: hormuz_traffic_restored
+    direction: -1
+    strength: weak
+    evidence_type: context
+    note: "代理人活动增加区域不稳定，间接影响航运"
+
+  # ══════════════════════════════════════════════════════════════
+  # escalation_rhetoric → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: escalation_rhetoric
+    market_condition: permanent_peace_deal
+    direction: -1
+    strength: weak
+    evidence_type: context
+    note: "升级言论降低和平预期，但言论不等于行动"
+
+  - event_type: escalation_rhetoric
+    market_condition: diplomatic_meeting
+    direction: -1
+    strength: weak
+    evidence_type: context
+    note: "升级言论降低外交接触意愿，但不排除秘密渠道"
+
+  - event_type: escalation_rhetoric
+    market_condition: war_declaration
+    direction: +1
+    strength: weak
+    evidence_type: context
+    note: "升级言论增加冲突预期，但言论到宣战距离很远"
+
+  # ══════════════════════════════════════════════════════════════
+  # military_operations_end → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: military_operations_end
+    market_condition: permanent_peace_deal
+    direction: +1
+    strength: medium
+    evidence_type: direct
+    note: "结束军事行动是和平协议的重要前置条件"
+
+  - event_type: military_operations_end
+    market_condition: diplomatic_meeting
+    direction: +1
+    strength: medium
+    evidence_type: direct
+    note: "军事行动结束为外交接触创造条件"
+
+  - event_type: military_operations_end
+    market_condition: military_operations_end
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "直接结算事件"
+
+  - event_type: military_operations_end
+    market_condition: war_declaration
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "结束军事行动与宣战方向相反"
+
+  - event_type: military_operations_end
+    market_condition: hormuz_traffic_restored
+    direction: +1
+    strength: medium
+    evidence_type: direct
+    note: "军事行动结束有利于航运恢复"
+
+  # ══════════════════════════════════════════════════════════════
+  # diplomatic_contact → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: diplomatic_contact
+    market_condition: permanent_peace_deal
+    direction: +1
+    strength: weak
+    evidence_type: context
+    note: "外交接触是和平协议的必要不充分条件"
+
+  - event_type: diplomatic_contact
+    market_condition: diplomatic_meeting
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "直接结算事件（外交接触本身就是外交会面）"
+
+  - event_type: diplomatic_contact
+    market_condition: war_declaration
+    direction: -1
+    strength: weak
+    evidence_type: context
+    note: "外交接触降低宣战可能性"
+
+  - event_type: diplomatic_contact
+    market_condition: nuclear_deal_restored
+    direction: +1
+    strength: weak
+    evidence_type: context
+    note: "外交接触为核协议谈判创造条件"
+
+  # ══════════════════════════════════════════════════════════════
+  # peace_deal_signed → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: peace_deal_signed
+    market_condition: permanent_peace_deal
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "直接结算事件"
+
+  - event_type: peace_deal_signed
+    market_condition: diplomatic_meeting
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "签署协议必然包含外交会面"
+
+  - event_type: peace_deal_signed
+    market_condition: war_declaration
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "和平协议与宣战互斥"
+
+  - event_type: peace_deal_signed
+    market_condition: military_operations_end
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "和平协议通常包含停止军事行动条款"
+
+  - event_type: peace_deal_signed
+    market_condition: hormuz_traffic_restored
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "和平协议下航运恢复是大概率事件"
+
+  - event_type: peace_deal_signed
+    market_condition: nuclear_deal_restored
+    direction: +1
+    strength: medium
+    evidence_type: direct
+    note: "全面和平协议可能包含核问题解决方案"
+
+  # ══════════════════════════════════════════════════════════════
+  # ceasefire → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: ceasefire
+    market_condition: permanent_peace_deal
+    direction: +1
+    strength: weak
+    evidence_type: context
+    note: "停火是和平协议的前置条件，但停火不等于永久和平"
+
+  - event_type: ceasefire
+    market_condition: diplomatic_meeting
+    direction: +1
+    strength: medium
+    evidence_type: context
+    note: "停火期间更容易安排外交会面"
+
+  - event_type: ceasefire
+    market_condition: military_operations_end
+    direction: +1
+    strength: medium
+    evidence_type: direct
+    note: "停火是军事行动结束的重要信号"
+
+  - event_type: ceasefire
+    market_condition: war_declaration
+    direction: -1
+    strength: medium
+    evidence_type: direct
+    note: "停火与宣战方向相反"
+
+  - event_type: ceasefire
+    market_condition: hormuz_traffic_restored
+    direction: +1
+    strength: medium
+    evidence_type: direct
+    note: "停火有利于航运恢复"
+
+  # ══════════════════════════════════════════════════════════════
+  # talks_collapsed → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: talks_collapsed
+    market_condition: permanent_peace_deal
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "谈判破裂直接降低和平协议可能性"
+
+  - event_type: talks_collapsed
+    market_condition: diplomatic_meeting
+    direction: -1
+    strength: medium
+    evidence_type: direct
+    note: "谈判破裂后短期内不太可能再次会面"
+
+  - event_type: talks_collapsed
+    market_condition: war_declaration
+    direction: +1
+    strength: weak
+    evidence_type: context
+    note: "谈判破裂增加冲突升级风险"
+
+  - event_type: talks_collapsed
+    market_condition: nuclear_deal_restored
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "谈判破裂直接阻碍核协议恢复"
+
+  # ══════════════════════════════════════════════════════════════
+  # nuclear_development → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: nuclear_development
+    market_condition: permanent_peace_deal
+    direction: -1
+    strength: medium
+    evidence_type: context
+    note: "核计划推进增加紧张，降低和平协议可能性"
+
+  - event_type: nuclear_development
+    market_condition: war_declaration
+    direction: +1
+    strength: medium
+    evidence_type: context
+    note: "核计划推进可能触发军事干预"
+
+  - event_type: nuclear_development
+    market_condition: iran_nuclear_weapon
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "核计划进展直接影响拥核市场"
+
+  - event_type: nuclear_development
+    market_condition: nuclear_deal_restored
+    direction: -1
+    strength: medium
+    evidence_type: direct
+    note: "单方面推进核计划降低核协议恢复可能性"
+
+  # ══════════════════════════════════════════════════════════════
+  # nuclear_deal → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: nuclear_deal
+    market_condition: permanent_peace_deal
+    direction: +1
+    strength: medium
+    evidence_type: context
+    note: "核协议进展为更广泛的和平协议创造条件"
+
+  - event_type: nuclear_deal
+    market_condition: diplomatic_meeting
+    direction: +1
+    strength: medium
+    evidence_type: direct
+    note: "核协议谈判本身就是外交接触"
+
+  - event_type: nuclear_deal
+    market_condition: nuclear_deal_restored
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "直接结算事件"
+
+  - event_type: nuclear_deal
+    market_condition: iran_nuclear_weapon
+    direction: -1
+    strength: medium
+    evidence_type: direct
+    note: "核协议限制伊朗核武器发展"
+
+  - event_type: nuclear_deal
+    market_condition: war_declaration
+    direction: -1
+    strength: medium
+    evidence_type: context
+    note: "核协议进展降低军事冲突风险"
+
+  # ══════════════════════════════════════════════════════════════
+  # sanctions_action → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: sanctions_action
+    market_condition: permanent_peace_deal
+    direction: 0
+    strength: weak
+    evidence_type: context
+    note: "制裁行动方向取决于是加强还是解除，需看具体内容"
+
+  - event_type: sanctions_action
+    market_condition: nuclear_deal_restored
+    direction: 0
+    strength: medium
+    evidence_type: context
+    note: "制裁解除是核协议的核心条款，但加强制裁则相反"
+
+  # ══════════════════════════════════════════════════════════════
+  # regime_change → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: regime_change
+    market_condition: regime_fall
+    direction: +1
+    strength: strong
+    evidence_type: direct
+    note: "直接结算事件"
+
+  - event_type: regime_change
+    market_condition: permanent_peace_deal
+    direction: 0
+    strength: medium
+    evidence_type: context
+    note: "政权更迭可能促进也可能阻碍和平，取决于新政权性质"
+
+  - event_type: regime_change
+    market_condition: nuclear_deal_restored
+    direction: 0
+    strength: medium
+    evidence_type: context
+    note: "新政权对核协议的态度不确定"
+
+  # ══════════════════════════════════════════════════════════════
+  # domestic_political_change → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: domestic_political_change
+    market_condition: permanent_peace_deal
+    direction: 0
+    strength: weak
+    evidence_type: context
+    note: "国内政治变动可能影响外交政策方向，但需看具体内容"
+
+  - event_type: domestic_political_change
+    market_condition: diplomatic_meeting
+    direction: 0
+    strength: weak
+    evidence_type: context
+    note: "新领导人可能改变外交接触意愿"
+
+  - event_type: domestic_political_change
+    market_condition: regime_fall
+    direction: 0
+    strength: weak
+    evidence_type: context
+    note: "体制内变化通常不等于政权倒台"
+
+  # ══════════════════════════════════════════════════════════════
+  # maritime_incident → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: maritime_incident
+    market_condition: hormuz_traffic_restored
+    direction: -1
+    strength: strong
+    evidence_type: direct
+    note: "海上事件直接影响航运恢复"
+
+  - event_type: maritime_incident
+    market_condition: permanent_peace_deal
+    direction: -1
+    strength: weak
+    evidence_type: context
+    note: "海上事件增加紧张但不直接阻止和平协议"
+
+  - event_type: maritime_incident
+    market_condition: war_declaration
+    direction: +1
+    strength: weak
+    evidence_type: context
+    note: "海上对峙可能升级但通常不直接导致宣战"
+
+  # ══════════════════════════════════════════════════════════════
+  # oil_market_impact → 各市场条件
+  # ══════════════════════════════════════════════════════════════
+
+  - event_type: oil_market_impact
+    market_condition: hormuz_traffic_restored
+    direction: 0
+    strength: weak
+    evidence_type: context
+    note: "油价波动是航运中断的结果而非原因"
+
+  - event_type: oil_market_impact
+    market_condition: permanent_peace_deal
+    direction: 0
+    strength: weak
+    evidence_type: context
+    note: "油价波动反映市场情绪，不直接影响和平协议"

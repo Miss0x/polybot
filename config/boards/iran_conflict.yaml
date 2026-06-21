@@ -1,0 +1,35 @@
+board:
+  id: iran_conflict
+  name: 美伊冲突
+  source_slug: iran
+  tag_slug: iran
+  keywords_market:
+
+    - Iran
+    - Israeli
+    - Israel
+    - Tehran
+    - IRGC
+    - Hormuz
+    - Khamenei
+    - Netanyahu
+    - nuclear deal
+    - IAEA
+  keywords_news:
+    - iran
+    - tehran
+    - irgc
+    - hormuz
+    - nuclear
+    - iaea
+    - israel
+thresholds:
+  trigger_price_1h: 0.03
+  trigger_price_24h: 0.05
+  trigger_news_count: 2
+  alert_absolute: 0.08
+  alert_relative: 0.20
+llm:
+  primary: claude-sonnet-4-6
+  cheap_tier: glm-4-flash
+  fallback: deepseek-chat

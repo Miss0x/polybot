@@ -1,0 +1,93 @@
+{
+  "generated_at": "2026-04-27T02:02:07.782751+00:00",
+  "markets_processed": 6,
+  "alerts_generated": 3,
+  "watch_items": 0,
+  "low_confidence_items": 2,
+  "drafts": [
+    {
+      "market_id": "1919421",
+      "title": "[Polybot Market Watch] ⚠ YES Probability May Fall — US x Iran permanent peace deal by April 30, 2026?",
+      "body": "Market: US x Iran permanent peace deal by April 30, 2026?\n\nCurrent YES: 2%\n\nView: YES probability may fall\n\nConfidence: High\n\nReason: Matched 37 news items in the window: direct=2, context=35, neutral=2. Only direct evidence contributes to core strength: positive 0.00, negative 2.00. Top 2 direct key news by relevance: \"‘State of war’: Why Israel has escalated attacks i\"; \"Lebanon accuses Israel of targeting journalist kil\".\n\nKey News:\n  1. ▼ [0.95] ‘State of war’: Why Israel has escalated attacks in Gaza\n     → event_type=war_declared × market_condition=permanent_peace_deal; evidence=direct; strength=strong; d\n  2. ▼ [0.95] Lebanon accuses Israel of targeting journalist killed in air strike\n     → event_type=military_strike × market_condition=permanent_peace_deal; evidence=direct; strength=strong\n\nRisk Notes:\n  - Most matched news is context-level background; avoid treating it as a strong alert signal.",
+      "severity": "warning",
+      "should_alert": true,
+      "metadata": {
+        "probability_view": "lower",
+        "confidence": "high",
+        "current_yes_price": 0.024,
+        "key_news_count": 2,
+        "risk_notes_count": 1
+      }
+    },
+    {
+      "market_id": "1707932",
+      "title": "[Polybot Market Watch] YES Probability May Rise — Will the Iranian regime fall by May 31?",
+      "body": "Market: Will the Iranian regime fall by May 31?\n\nCurrent YES: 4%\n\nView: YES probability may rise\n\nConfidence: Medium\n\nReason: Matched 3 news items in the window: direct=1, context=2, neutral=2. Only direct evidence contributes to core strength: positive 1.00, negative 0.00. Top 1 direct key news by relevance: \"Couple discovers Lebanon home destroyed by Israel \".\n\nKey News:\n  1. ▲ [0.95] Couple discovers Lebanon home destroyed by Israel from satellite image\n     → event_type=regime_change × market_condition=regime_fall; evidence=direct; strength=strong; direction\n\nRisk Notes:\n  - Most matched news is context-level background; avoid treating it as a strong alert signal.\n  - A large share of matched news is directionally neutral; signals may be noisy.",
+      "severity": "info",
+      "should_alert": false,
+      "metadata": {
+        "probability_view": "higher",
+        "confidence": "medium",
+        "current_yes_price": 0.038,
+        "key_news_count": 1,
+        "risk_notes_count": 2
+      }
+    },
+    {
+      "market_id": "1959320",
+      "title": "[Polybot Market Watch] ⚠ YES Probability May Rise — US x Iran diplomatic meeting by April 30, 2026?",
+      "body": "Market: US x Iran diplomatic meeting by April 30, 2026?\n\nCurrent YES: 17%\n\nView: YES probability may rise\n\nConfidence: High\n\nReason: Matched 28 news items in the window: direct=11, context=17, neutral=1. Only direct evidence contributes to core strength: positive 8.60, negative 1.60. Top 3 direct key news by relevance: \"‘State of war’: Why Israel has escalated attacks i\"; \"US-Iran conflict: What’s the latest as the Islamab\"; \"Trump cancels US envoys' trip to Pakistan for talk\".\n\nKey News:\n  1. ▼ [0.95] ‘State of war’: Why Israel has escalated attacks in Gaza\n     → event_type=war_declared × market_condition=diplomatic_meeting; evidence=direct; strength=strong; dir\n  2. ▲ [0.95] US-Iran conflict: What’s the latest as the Islamabad talks stall?\n     → event_type=diplomatic_contact × market_condition=diplomatic_meeting; evidence=direct; strength=stron\n  3. ▲ [0.95] Trump cancels US envoys' trip to Pakistan for talks on Iran war\n     → event_type=diplomatic_contact × market_condition=diplomatic_meeting; evidence=direct; strength=stron\n\nRisk Notes:\n  - Most matched news is context-level background; avoid treating it as a strong alert signal.",
+      "severity": "warning",
+      "should_alert": true,
+      "metadata": {
+        "probability_view": "higher",
+        "confidence": "high",
+        "current_yes_price": 0.17,
+        "key_news_count": 3,
+        "risk_notes_count": 1
+      }
+    },
+    {
+      "market_id": "1517835",
+      "title": "[Polybot Market Watch] No Clear Change — Trump announces end of military operations against Iran by A",
+      "body": "Market: Trump announces end of military operations against Iran by April 30th?\n\nCurrent YES: 4%\n\nView: No clear probability change yet\n\nConfidence: Low\n\nReason: Matched 0 news items in the window: direct=0, context=0, neutral=0. Only direct evidence contributes to core strength: positive 0.00, negative 0.00. No direct news reached the key-news relevance threshold. Context signals may describe the background but are not enough for an alert. Direct aggregate signal strength is below the actionable threshold.\n\nKey News:\n  None strong enough for direct alert.\n\nRisk Notes:\n  - Direct signal strength is very low; current price may not reflect recent news.",
+      "severity": "info",
+      "should_alert": false,
+      "metadata": {
+        "probability_view": "unchanged",
+        "confidence": "low",
+        "current_yes_price": 0.041,
+        "key_news_count": 0,
+        "risk_notes_count": 1
+      }
+    },
+    {
+      "market_id": "1919425",
+      "title": "[Polybot Market Watch] ⚠ YES Probability May Fall — US x Iran permanent peace deal by May 31, 2026?",
+      "body": "Market: US x Iran permanent peace deal by May 31, 2026?\n\nCurrent YES: 31%\n\nView: YES probability may fall\n\nConfidence: High\n\nReason: Matched 37 news items in the window: direct=2, context=35, neutral=2. Only direct evidence contributes to core strength: positive 0.00, negative 2.00. Top 2 direct key news by relevance: \"‘State of war’: Why Israel has escalated attacks i\"; \"Lebanon accuses Israel of targeting journalist kil\".\n\nKey News:\n  1. ▼ [0.95] ‘State of war’: Why Israel has escalated attacks in Gaza\n     → event_type=war_declared × market_condition=permanent_peace_deal; evidence=direct; strength=strong; d\n  2. ▼ [0.95] Lebanon accuses Israel of targeting journalist killed in air strike\n     → event_type=military_strike × market_condition=permanent_peace_deal; evidence=direct; strength=strong\n\nRisk Notes:\n  - Most matched news is context-level background; avoid treating it as a strong alert signal.",
+      "severity": "warning",
+      "should_alert": true,
+      "metadata": {
+        "probability_view": "lower",
+        "confidence": "high",
+        "current_yes_price": 0.31,
+        "key_news_count": 2,
+        "risk_notes_count": 1
+      }
+    },
+    {
+      "market_id": "1611267",
+      "title": "[Polybot Market Watch] No Clear Change — Kharg Island no longer under Iranian control by April 30?",
+      "body": "Market: Kharg Island no longer under Iranian control by April 30?\n\nCurrent YES: 3%\n\nView: No clear probability change yet\n\nConfidence: Low\n\nReason: Matched 0 news items in the window: direct=0, context=0, neutral=0. Only direct evidence contributes to core strength: positive 0.00, negative 0.00. No direct news reached the key-news relevance threshold. Context signals may describe the background but are not enough for an alert. Direct aggregate signal strength is below the actionable threshold.\n\nKey News:\n  None strong enough for direct alert.\n\nRisk Notes:\n  - Direct signal strength is very low; current price may not reflect recent news.",
+      "severity": "info",
+      "should_alert": false,
+      "metadata": {
+        "probability_view": "unchanged",
+        "confidence": "low",
+        "current_yes_price": 0.026,
+        "key_news_count": 0,
+        "risk_notes_count": 1
+      }
+    }
+  ]
+}

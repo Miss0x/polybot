@@ -1,0 +1,239 @@
+{
+  "gold": {
+    "board_id": "iran_conflict",
+    "version": "phase5_baseline_v1"
+  },
+  "summary": {
+    "total_cases": 12,
+    "passed_cases": 12,
+    "failed_cases": 0,
+    "event_type_accuracy": 1.0,
+    "evidence_type_accuracy": 1.0,
+    "direction_accuracy": 1.0,
+    "matched_accuracy": 1.0,
+    "false_positive_count": 0,
+    "false_negative_count": 0
+  },
+  "cases": [
+    {
+      "id": "peace_deal_direct_yes",
+      "market_condition": "permanent_peace_deal",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "peace_deal_signed",
+      "actual_event_type": "peace_deal_signed",
+      "expected_evidence_type": "direct",
+      "actual_evidence_type": "direct",
+      "expected_direction": 1,
+      "actual_direction": 1,
+      "extracted_event_types": [
+        "diplomatic_contact",
+        "peace_deal_signed"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=peace_deal_signed × market_condition=permanent_peace_deal; evidence=direct; strength=strong; direction=1; condition_keywords=['permanent peace deal', 'permanent peace', 'peace deal']; note=直接结算事件"
+    },
+    {
+      "id": "diplomatic_meeting_direct_yes",
+      "market_condition": "diplomatic_meeting",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "diplomatic_contact",
+      "actual_event_type": "diplomatic_contact",
+      "expected_evidence_type": "direct",
+      "actual_evidence_type": "direct",
+      "expected_direction": 1,
+      "actual_direction": 1,
+      "extracted_event_types": [
+        "diplomatic_contact"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=diplomatic_contact × market_condition=diplomatic_meeting; evidence=direct; strength=strong; direction=1; condition_keywords=['diplomatic meeting']; note=直接结算事件（外交接触本身就是外交会面）"
+    },
+    {
+      "id": "peace_deal_context_from_meeting",
+      "market_condition": "permanent_peace_deal",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "diplomatic_contact",
+      "actual_event_type": "diplomatic_contact",
+      "expected_evidence_type": "context",
+      "actual_evidence_type": "context",
+      "expected_direction": 1,
+      "actual_direction": 1,
+      "extracted_event_types": [
+        "diplomatic_contact"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=diplomatic_contact × market_condition=permanent_peace_deal; evidence=context; strength=weak; direction=1; condition_keywords=['permanent peace deal', 'permanent peace', 'peace deal']; note=外交接触是和平协议的必要不充分条件"
+    },
+    {
+      "id": "war_declaration_direct_yes",
+      "market_condition": "war_declaration",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "war_declared",
+      "actual_event_type": "war_declared",
+      "expected_evidence_type": "direct",
+      "actual_evidence_type": "direct",
+      "expected_direction": 1,
+      "actual_direction": 1,
+      "extracted_event_types": [
+        "war_declared",
+        "domestic_political_change"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=war_declared × market_condition=war_declaration; evidence=direct; strength=strong; direction=1; condition_keywords=['formal war', 'war declaration']; note=直接结算事件"
+    },
+    {
+      "id": "war_declaration_negative_for_peace",
+      "market_condition": "permanent_peace_deal",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "war_declared",
+      "actual_event_type": "war_declared",
+      "expected_evidence_type": "direct",
+      "actual_evidence_type": "direct",
+      "expected_direction": -1,
+      "actual_direction": -1,
+      "extracted_event_types": [
+        "war_declared",
+        "domestic_political_change"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=war_declared × market_condition=permanent_peace_deal; evidence=direct; strength=strong; direction=-1; condition_keywords=['permanent peace deal', 'permanent peace', 'peace deal']; note=正式宣战是和平协议的直接否定"
+    },
+    {
+      "id": "hormuz_direct_negative",
+      "market_condition": "hormuz_traffic_restored",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "maritime_incident",
+      "actual_event_type": "maritime_incident",
+      "expected_evidence_type": "direct",
+      "actual_evidence_type": "direct",
+      "expected_direction": -1,
+      "actual_direction": -1,
+      "extracted_event_types": [
+        "maritime_incident",
+        "regime_change"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=maritime_incident × market_condition=hormuz_traffic_restored; evidence=direct; strength=strong; direction=-1; condition_keywords=['strait of hormuz', 'hormuz shipping']; note=海上事件直接影响航运恢复"
+    },
+    {
+      "id": "military_operations_end_direct_yes",
+      "market_condition": "military_operations_end",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "military_operations_end",
+      "actual_event_type": "military_operations_end",
+      "expected_evidence_type": "direct",
+      "actual_evidence_type": "direct",
+      "expected_direction": 1,
+      "actual_direction": 1,
+      "extracted_event_types": [
+        "military_operations_end"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=military_operations_end × market_condition=military_operations_end; evidence=direct; strength=strong; direction=1; condition_keywords=['ends military operations']; note=直接结算事件"
+    },
+    {
+      "id": "regime_fall_direct_yes",
+      "market_condition": "regime_fall",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "regime_change",
+      "actual_event_type": "regime_change",
+      "expected_evidence_type": "direct",
+      "actual_evidence_type": "direct",
+      "expected_direction": 1,
+      "actual_direction": 1,
+      "extracted_event_types": [
+        "regime_change"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=regime_change × market_condition=regime_fall; evidence=direct; strength=strong; direction=1; condition_keywords=['regime fall']; note=直接结算事件"
+    },
+    {
+      "id": "nuclear_deal_direct_yes",
+      "market_condition": "nuclear_deal_restored",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "nuclear_deal",
+      "actual_event_type": "nuclear_deal",
+      "expected_evidence_type": "direct",
+      "actual_evidence_type": "direct",
+      "expected_direction": 1,
+      "actual_direction": 1,
+      "extracted_event_types": [
+        "nuclear_deal"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=nuclear_deal × market_condition=nuclear_deal_restored; evidence=direct; strength=strong; direction=1; condition_keywords=['nuclear deal']; note=直接结算事件"
+    },
+    {
+      "id": "nuclear_weapon_direct_yes",
+      "market_condition": "iran_nuclear_weapon",
+      "expected_matched": true,
+      "actual_matched": true,
+      "expected_event_type": "nuclear_development",
+      "actual_event_type": "nuclear_development",
+      "expected_evidence_type": "direct",
+      "actual_evidence_type": "direct",
+      "expected_direction": 1,
+      "actual_direction": 1,
+      "extracted_event_types": [
+        "nuclear_development"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": "event_type=nuclear_development × market_condition=iran_nuclear_weapon; evidence=direct; strength=strong; direction=1; condition_keywords=['nuclear weapon']; note=核计划进展直接影响拥核市场"
+    },
+    {
+      "id": "gaza_war_irrelevant_to_us_iran_peace",
+      "market_condition": "permanent_peace_deal",
+      "expected_matched": false,
+      "actual_matched": false,
+      "expected_event_type": null,
+      "actual_event_type": null,
+      "expected_evidence_type": null,
+      "actual_evidence_type": null,
+      "expected_direction": 0,
+      "actual_direction": 0,
+      "extracted_event_types": [
+        "war_declared"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": null
+    },
+    {
+      "id": "lebanon_airstrike_irrelevant_to_regime_fall",
+      "market_condition": "regime_fall",
+      "expected_matched": false,
+      "actual_matched": false,
+      "expected_event_type": null,
+      "actual_event_type": null,
+      "expected_evidence_type": null,
+      "actual_evidence_type": null,
+      "expected_direction": 0,
+      "actual_direction": 0,
+      "extracted_event_types": [
+        "military_strike"
+      ],
+      "passed": true,
+      "errors": [],
+      "reasoning": null
+    }
+  ]
+}

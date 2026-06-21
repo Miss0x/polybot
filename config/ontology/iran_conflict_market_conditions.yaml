@@ -1,0 +1,147 @@
+# ============================================================================
+# Iran Conflict Market Conditions — 美伊冲突板块市场条件归一表
+# ============================================================================
+#
+# 每个 market_condition_type 对应一类可结算的预测市场问题。
+# 市场不打标签，而是归一到这些受控条件类型上。
+#
+# 字段说明：
+#   id:                   唯一标识符（snake_case）
+#   label:                人类可读标签
+#   resolution_question:  典型的市场结算问题模板
+#   resolution_keywords:  用于将具体市场归一到此条件类型的关键词
+#   actors:               涉及的核心行为体
+#   resolution_criteria:  什么情况算 YES，什么情况算 NO
+# ============================================================================
+
+board_id: iran_conflict
+
+market_conditions:
+
+  - id: permanent_peace_deal
+    label: 永久和平协议
+    resolution_question: "US x Iran permanent peace deal by {deadline}?"
+    resolution_keywords:
+      - permanent peace deal
+      - permanent peace
+      - peace deal
+      - peace treaty
+      - peace agreement
+      - comprehensive deal
+      - comprehensive agreement
+      - formal peace
+    actors: [US, Iran]
+    resolution_criteria:
+      yes: "美伊双方签署正式的永久性和平协议或全面协议"
+      no: "截止日期前未签署任何正式和平协议"
+
+  - id: diplomatic_meeting
+    label: 外交会面
+    resolution_question: "US x Iran diplomatic meeting by {deadline}?"
+    resolution_keywords:
+      - diplomatic meeting
+      - diplomatic talks
+      - direct talks
+      - bilateral meeting
+      - face-to-face meeting
+      - summit
+      - envoys meet
+    actors: [US, Iran]
+    resolution_criteria:
+      yes: "美伊双方官方代表进行直接外交会面（包括秘密渠道）"
+      no: "截止日期前未发生任何直接外交接触"
+
+  - id: regime_fall
+    label: 伊朗政权倒台
+    resolution_question: "Iran regime fall/collapse by {deadline}?"
+    resolution_keywords:
+      - regime fall
+      - regime collapse
+      - regime change
+      - government overthrown
+      - supreme leader removed
+      - revolution
+      - coup
+    actors: [Iran]
+    resolution_criteria:
+      yes: "伊朗现政权被推翻、最高领袖被移除、或发生实质性政权更迭"
+      no: "截止日期前伊朗现政权仍然执政"
+
+  - id: hormuz_traffic_restored
+    label: 霍尔木兹海峡交通恢复
+    resolution_question: "Strait of Hormuz shipping traffic restored by {deadline}?"
+    resolution_keywords:
+      - hormuz traffic
+      - hormuz restored
+      - shipping restored
+      - strait of hormuz
+      - hormuz shipping
+      - maritime traffic restored
+      - shipping lane reopened
+    actors: [Iran, US Navy, international shipping]
+    resolution_criteria:
+      yes: "霍尔木兹海峡商业航运恢复到正常水平"
+      no: "截止日期前航运仍受显著干扰"
+
+  - id: military_operations_end
+    label: 结束军事行动
+    resolution_question: "US ends military operations against Iran by {deadline}?"
+    resolution_keywords:
+      - end military operations
+      - ends military operations
+      - military operations end
+
+      - withdraw
+      - withdrawal
+      - stand down
+      - combat operations end
+      - mission concluded
+    actors: [US, Iran]
+    resolution_criteria:
+      yes: "美国正式宣布结束对伊朗的军事行动"
+      no: "截止日期前军事行动仍在进行"
+
+  - id: war_declaration
+    label: 正式宣战
+    resolution_question: "Formal war declaration between US/Israel and Iran by {deadline}?"
+    resolution_keywords:
+      - declare war
+      - war declared
+      - formal war
+      - state of war
+      - war declaration
+    actors: [US, Iran, Israel]
+    resolution_criteria:
+      yes: "任一方正式宣布进入战争状态"
+      no: "截止日期前未发生正式宣战"
+
+  - id: nuclear_deal_restored
+    label: 核协议恢复
+    resolution_question: "Iran nuclear deal restored/new deal by {deadline}?"
+    resolution_keywords:
+      - nuclear deal
+      - JCPOA
+      - nuclear agreement
+      - nuclear accord
+      - restore nuclear deal
+      - new nuclear deal
+      - iran deal
+    actors: [US, Iran, EU, IAEA]
+    resolution_criteria:
+      yes: "JCPOA 恢复执行或达成新的核协议"
+      no: "截止日期前未恢复或达成核协议"
+
+  - id: iran_nuclear_weapon
+    label: 伊朗拥核
+    resolution_question: "Iran develops/tests nuclear weapon by {deadline}?"
+    resolution_keywords:
+      - nuclear weapon
+      - nuclear test
+      - nuclear bomb
+      - atomic bomb
+      - weapons-grade uranium
+      - nuclear breakout
+    actors: [Iran, IAEA]
+    resolution_criteria:
+      yes: "伊朗成功测试核武器或被确认拥有核武器"
+      no: "截止日期前伊朗未被确认拥有核武器"

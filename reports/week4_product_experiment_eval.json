@@ -1,0 +1,79 @@
+{
+  "generated_at": "2026-04-25T20:27:50.923767+00:00",
+  "markets_processed": 5,
+  "alerts_generated": 5,
+  "watch_items": 0,
+  "low_confidence_items": 0,
+  "drafts": [
+    {
+      "market_id": "test_phase1_market_001",
+      "title": "[Polybot Market Watch] ⚠ YES Probability May Fall — Will Iran attack Israel by June 2025?",
+      "body": "Market: Will Iran attack Israel by June 2025?\n\nCurrent YES: N/A\n\nView: YES probability may fall\n\nConfidence: High\n\nReason: Matched 30 news items in the window: positive strength 0.00, negative strength 7.85, neutral 21. Top 3 key news by relevance: \"Number of amputees set to rise in Gaza as Israel b\"; \"Explosions by Israeli forces in south Lebanon desp\"; \"Does Israel’s ‘Yellow Line’ violate the Lebanon ce\".\n\nKey News:\n  1. ○ [0.90] Number of amputees set to rise in Gaza as Israel blocks aid, NGO warns\n     → [C] alias hit: ['israel']; subject+object: ['israel']+['israel']; dedicated entity: ['israel']\n  2. ▼ [0.90] Explosions by Israeli forces in south Lebanon despite ceasefire\n     → [C] alias hit: ['israel', 'israeli']; subject+object: ['israel']+['israel']; dedicated entity: ['isr\n  3. ▼ [0.90] Does Israel’s ‘Yellow Line’ violate the Lebanon ceasefire?\n     → [C] alias hit: ['israel']; subject+object: ['israel']+['israel']; dedicated entity: ['israel']\n\nRisk Notes:\n  - A large share of matched news is directionally neutral; signals may be noisy.",
+      "severity": "warning",
+      "should_alert": true,
+      "metadata": {
+        "probability_view": "lower",
+        "confidence": "high",
+        "current_yes_price": null,
+        "key_news_count": 3,
+        "risk_notes_count": 1
+      }
+    },
+    {
+      "market_id": "3719",
+      "title": "[Polybot Market Watch] ⚠ YES Probability May Fall — Will an election for the Israeli Knesset occur before August",
+      "body": "Market: Will an election for the Israeli Knesset occur before August 1, 2022?\n\nCurrent YES: 0%\n\nView: YES probability may fall\n\nConfidence: High\n\nReason: Matched 31 news items in the window: positive strength 0.85, negative strength 7.60, neutral 21. Top 3 key news by relevance: \"Number of amputees set to rise in Gaza as Israel b\"; \"Explosions by Israeli forces in south Lebanon desp\"; \"Does Israel’s ‘Yellow Line’ violate the Lebanon ce\".\n\nKey News:\n  1. ○ [0.90] Number of amputees set to rise in Gaza as Israel blocks aid, NGO warns\n     → [C] alias hit: ['israel']; subject+object: ['israel']+['israel']; dedicated entity: ['israel']\n  2. ▼ [0.90] Explosions by Israeli forces in south Lebanon despite ceasefire\n     → [C] alias hit: ['israeli', 'israel']; subject+object: ['israel', 'israeli']+['israel']; dedicated en\n  3. ▼ [0.90] Does Israel’s ‘Yellow Line’ violate the Lebanon ceasefire?\n     → [C] alias hit: ['israel']; subject+object: ['israel']+['israel']; dedicated entity: ['israel']\n\nRisk Notes:\n  - A large share of matched news is directionally neutral; signals may be noisy.",
+      "severity": "warning",
+      "should_alert": true,
+      "metadata": {
+        "probability_view": "lower",
+        "confidence": "high",
+        "current_yes_price": 0.0,
+        "key_news_count": 3,
+        "risk_notes_count": 1
+      }
+    },
+    {
+      "market_id": "4172",
+      "title": "[Polybot Market Watch] ⚠ YES Probability May Fall — Will Benjamin Netanyahu remain prime minister of Israel thro",
+      "body": "Market: Will Benjamin Netanyahu remain prime minister of Israel through June 30, 2021?\n\nCurrent YES: 0%\n\nView: YES probability may fall\n\nConfidence: High\n\nReason: Matched 31 news items in the window: positive strength 0.80, negative strength 7.60, neutral 21. Top 3 key news by relevance: \"Number of amputees set to rise in Gaza as Israel b\"; \"Explosions by Israeli forces in south Lebanon desp\"; \"Does Israel’s ‘Yellow Line’ violate the Lebanon ce\".\n\nKey News:\n  1. ○ [0.90] Number of amputees set to rise in Gaza as Israel blocks aid, NGO warns\n     → [C] alias hit: ['israel']; subject+object: ['israel']+['israel']; dedicated entity: ['israel']\n  2. ▼ [0.90] Explosions by Israeli forces in south Lebanon despite ceasefire\n     → [C] alias hit: ['israel', 'israeli']; subject+object: ['israel']+['israel']; dedicated entity: ['isr\n  3. ▼ [0.90] Does Israel’s ‘Yellow Line’ violate the Lebanon ceasefire?\n     → [C] alias hit: ['israel']; subject+object: ['israel']+['israel']; dedicated entity: ['israel']\n\nRisk Notes:\n  - A large share of matched news is directionally neutral; signals may be noisy.",
+      "severity": "warning",
+      "should_alert": true,
+      "metadata": {
+        "probability_view": "lower",
+        "confidence": "high",
+        "current_yes_price": 0.0,
+        "key_news_count": 3,
+        "risk_notes_count": 1
+      }
+    },
+    {
+      "market_id": "10083",
+      "title": "[Polybot Market Watch] ⚠ YES Probability May Fall — Israel ground offensive in Rafah by April 30?",
+      "body": "Market: Israel ground offensive in Rafah by April 30?\n\nCurrent YES: 0%\n\nView: YES probability may fall\n\nConfidence: High\n\nReason: Matched 31 news items in the window: positive strength 0.80, negative strength 7.60, neutral 21. Top 3 key news by relevance: \"Number of amputees set to rise in Gaza as Israel b\"; \"Explosions by Israeli forces in south Lebanon desp\"; \"Does Israel’s ‘Yellow Line’ violate the Lebanon ce\".\n\nKey News:\n  1. ○ [0.90] Number of amputees set to rise in Gaza as Israel blocks aid, NGO warns\n     → [C] alias hit: ['israel']; subject+object: ['israel']+['israel']; dedicated entity: ['israel']\n  2. ▼ [0.90] Explosions by Israeli forces in south Lebanon despite ceasefire\n     → [C] alias hit: ['israel', 'israeli']; subject+object: ['israel']+['israel']; dedicated entity: ['isr\n  3. ▼ [0.90] Does Israel’s ‘Yellow Line’ violate the Lebanon ceasefire?\n     → [C] alias hit: ['israel']; subject+object: ['israel']+['israel']; dedicated entity: ['israel']\n\nRisk Notes:\n  - A large share of matched news is directionally neutral; signals may be noisy.",
+      "severity": "warning",
+      "should_alert": true,
+      "metadata": {
+        "probability_view": "lower",
+        "confidence": "high",
+        "current_yes_price": 0.0,
+        "key_news_count": 3,
+        "risk_notes_count": 1
+      }
+    },
+    {
+      "market_id": "10084",
+      "title": "[Polybot Market Watch] ⚠ YES Probability May Fall — Will Israel invade Lebanon before May?",
+      "body": "Market: Will Israel invade Lebanon before May?\n\nCurrent YES: 0%\n\nView: YES probability may fall\n\nConfidence: High\n\nReason: Matched 31 news items in the window: positive strength 0.80, negative strength 7.60, neutral 21. Top 3 key news by relevance: \"Number of amputees set to rise in Gaza as Israel b\"; \"Explosions by Israeli forces in south Lebanon desp\"; \"Does Israel’s ‘Yellow Line’ violate the Lebanon ce\".\n\nKey News:\n  1. ○ [0.90] Number of amputees set to rise in Gaza as Israel blocks aid, NGO warns\n     → [C] alias hit: ['israel']; subject+object: ['israel']+['israel']; dedicated entity: ['israel']\n  2. ▼ [0.90] Explosions by Israeli forces in south Lebanon despite ceasefire\n     → [C] alias hit: ['israel', 'lebanon', 'israeli']; subject+object: ['israel']+['israel']; dedicated en\n  3. ▼ [0.90] Does Israel’s ‘Yellow Line’ violate the Lebanon ceasefire?\n     → [C] alias hit: ['israel', 'lebanon']; subject+object: ['israel']+['israel', 'military']; dedicated e\n\nRisk Notes:\n  - A large share of matched news is directionally neutral; signals may be noisy.",
+      "severity": "warning",
+      "should_alert": true,
+      "metadata": {
+        "probability_view": "lower",
+        "confidence": "high",
+        "current_yes_price": 0.0,
+        "key_news_count": 3,
+        "risk_notes_count": 1
+      }
+    }
+  ]
+}

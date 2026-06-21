@@ -1,0 +1,427 @@
+# ============================================================================
+# Iran Conflict Event Ontology — 美伊冲突板块事件类型本体
+# ============================================================================
+#
+# 每个 event_type 是一个受控的事件分类。
+# 新闻事件抽取器从这个有限集合中选择，不做开放式分类。
+#
+# 字段说明：
+#   id:          唯一标识符（snake_case）
+#   label:       人类可读标签
+#   description: 事件类型的定义和边界说明
+#   keywords:    用于规则抽取的关键词/短语（第一版）
+#   actors:      典型涉及的行为体
+#   examples:    示例新闻标题（帮助理解边界）
+# ============================================================================
+
+board_id: iran_conflict
+
+event_types:
+
+  # ── 军事与冲突 ──────────────────────────────────────────────
+
+  - id: military_strike
+    label: 军事打击
+    description: >
+      一方对另一方发动直接军事打击，包括空袭、导弹攻击、无人机袭击等。
+      不包括代理人行动（见 proxy_attack）。
+    keywords:
+      - military strike
+      - airstrike
+      - air strike
+      - missile attack
+      - missile strike
+      - missile barrage
+      - missile launch
+      - launches missile
+      - drone strike
+      - drone attack
+      - bombing
+      - bombardment
+      - launched attack
+      - direct attack
+      - retaliatory strike
+      - retaliation strike
+      - first strike
+      - launches attack
+    actors: [US, Iran, Israel]
+    examples:
+      - "Iran launches missile barrage at Israeli military bases"
+      - "US conducts airstrikes on IRGC facilities in Syria"
+      - "Israel strikes Iranian nuclear facility near Isfahan"
+
+  - id: war_declared
+    label: 正式宣战
+    description: >
+      国家层面正式宣布进入战争状态，或官方声明视为等同宣战的行为。
+      不包括口头威胁（见 escalation_rhetoric）。
+    keywords:
+      - declare war
+      - declares war
+      - declared war
+      - war declared
+      - formal war
+      - state of war
+      - war declaration
+      - officially at war
+      - declaring war
+    actors: [US, Iran, Israel]
+    examples:
+      - "Iran formally declares war on Israel"
+      - "US Congress authorizes military force against Iran"
+
+  - id: proxy_attack
+    label: 代理人攻击
+    description: >
+      通过代理人武装（Hezbollah、Houthis、伊拉克民兵等）发动的攻击。
+      与 military_strike 的区别：行为主体是非国家武装。
+    keywords:
+      - hezbollah attack
+      - houthi attack
+      - militia attack
+      - proxy attack
+      - proxy strike
+      - iran-backed
+      - iran backed
+      - iranian proxy
+      - resistance axis
+    actors: [Hezbollah, Houthis, Iraqi militias, Iran]
+    examples:
+      - "Hezbollah launches rockets into northern Israel"
+      - "Iran-backed militias attack US base in Iraq"
+      - "Houthi rebels strike Saudi oil facility"
+
+  - id: escalation_rhetoric
+    label: 升级言论/威胁
+    description: >
+      官方或高级别人物发表升级性言论、威胁、最后通牒。
+      不包括实际军事行动（见 military_strike）。
+    keywords:
+      - threatens
+      - threatened
+      - ultimatum
+      - warns of attack
+      - vows retaliation
+      - vows revenge
+      - red line
+      - all options on the table
+      - will respond
+      - will retaliate
+      - escalation
+      - tensions rise
+      - tensions escalate
+    actors: [US, Iran, Israel]
+    examples:
+      - "Iran warns of devastating response if attacked"
+      - "Netanyahu says all options on the table for Iran"
+      - "IRGC commander vows revenge for scientist assassination"
+
+  - id: military_operations_end
+    label: 结束军事行动
+    description: >
+      宣布停止军事行动、撤军、军事行动结束。
+      与 ceasefire 的区别：ceasefire 是双方协议，这里是单方面或正式结束。
+    keywords:
+      - end military operations
+      - military operations end
+      - withdraw troops
+      - troop withdrawal
+      - pullout
+      - stand down
+      - mission accomplished
+      - operations concluded
+      - combat operations end
+    actors: [US, Iran, Israel]
+    examples:
+      - "US announces end of military operations against Iran"
+      - "Israel withdraws forces from southern Lebanon"
+
+  # ── 外交与谈判 ──────────────────────────────────────────────
+
+  - id: diplomatic_contact
+    label: 外交接触/会面
+    description: >
+      美伊双方或通过中间人进行外交接触、会谈、峰会。
+      包括秘密渠道和公开会面。不包括协议签署（见 peace_deal_signed）。
+    keywords:
+      - diplomatic meeting
+      - diplomatic talks
+      - talks
+      - summit
+      - envoys
+      - envoy
+      - negotiation
+      - negotiations
+      - backchannel
+      - back-channel
+      - diplomatic contact
+      - bilateral meeting
+      - face-to-face
+      - direct talks
+      - indirect talks
+      - mediation
+      - mediator
+    actors: [US, Iran, Oman, Qatar, China, EU]
+    examples:
+      - "US and Iran envoys meet in Oman for secret talks"
+      - "Backchannel discussions resumed between Washington and Tehran"
+      - "China mediates new round of US-Iran negotiations"
+
+  - id: peace_deal_signed
+    label: 和平协议签署
+    description: >
+      正式签署和平协议、全面协议、永久性条约。
+      与 diplomatic_contact 的区别：这是最终结果，不是过程。
+    keywords:
+      - peace deal
+      - peace agreement
+      - peace treaty
+      - permanent deal
+      - comprehensive agreement
+      - treaty signed
+      - deal signed
+      - agreement reached
+      - accord signed
+      - formal agreement
+    actors: [US, Iran]
+    examples:
+      - "US and Iran sign permanent peace deal in Geneva"
+      - "Historic agreement reached between Washington and Tehran"
+
+  - id: ceasefire
+    label: 停火/休战
+    description: >
+      双方达成停火协议、临时休战、停火延长。
+      与 peace_deal_signed 的区别：停火是临时性的，不是永久协议。
+    keywords:
+      - ceasefire
+      - cease-fire
+      - truce
+      - armistice
+      - ceasefire extended
+      - ceasefire agreement
+      - halt hostilities
+      - cessation of hostilities
+      - temporary truce
+      - ceasefire holds
+      - ceasefire violated
+      - ceasefire collapsed
+    actors: [US, Iran, Israel, Hezbollah]
+    examples:
+      - "Iran and Israel agree to 72-hour ceasefire"
+      - "Ceasefire extended for another 30 days"
+      - "Truce collapses as fighting resumes in southern Lebanon"
+
+  - id: talks_collapsed
+    label: 谈判破裂
+    description: >
+      外交谈判失败、中断、一方退出谈判。
+      与 escalation_rhetoric 的区别：这里是谈判进程的实际中断。
+    keywords:
+      - talks collapsed
+      - talks failed
+      - negotiations failed
+      - negotiations broke down
+      - walked out
+      - talks suspended
+      - talks stalled
+      - diplomatic breakdown
+      - no deal
+      - deal fell through
+    actors: [US, Iran]
+    examples:
+      - "Iran walks out of nuclear talks in Vienna"
+      - "US-Iran negotiations collapse over sanctions dispute"
+
+  # ── 核问题 ──────────────────────────────────────────────────
+
+  - id: nuclear_development
+    label: 核计划进展
+    description: >
+      伊朗核计划的进展、铀浓缩、离心机安装、核设施建设。
+      包括 IAEA 报告中的核活动发现。
+    keywords:
+      - uranium enrichment
+      - enrichment
+      - enriching uranium
+      - enriching
+      - centrifuge
+      - centrifuges
+      - nuclear facility
+      - nuclear site
+      - nuclear program
+      - nuclear weapon
+      - weapons-grade
+      - weapons grade
+      - breakout time
+      - plutonium
+      - heavy water
+      - fordow
+      - natanz
+      - isfahan
+      - 90% purity
+      - highly enriched
+    actors: [Iran, IAEA]
+    examples:
+      - "IAEA reports Iran enriching uranium to 90% purity"
+      - "Iran installs new centrifuges at Fordow facility"
+      - "Iran's nuclear breakout time drops to two weeks"
+
+  - id: nuclear_deal
+    label: 核协议相关
+    description: >
+      核协议（JCPOA）的恢复、新核协议谈判、退出核协议。
+      与 nuclear_development 的区别：这里关注协议层面，不是技术层面。
+    keywords:
+      - nuclear deal
+      - JCPOA
+      - nuclear agreement
+      - nuclear accord
+      - nuclear talks
+      - nuclear negotiations
+      - rejoin JCPOA
+      - restore nuclear deal
+      - exit JCPOA
+      - nuclear deal restored
+      - iran deal
+    actors: [US, Iran, EU, IAEA, P5+1]
+    examples:
+      - "US and Iran reach new nuclear agreement"
+      - "Iran announces withdrawal from JCPOA"
+      - "Nuclear deal talks resume in Vienna"
+
+  # ── 制裁与经济 ──────────────────────────────────────────────
+
+  - id: sanctions_action
+    label: 制裁行动
+    description: >
+      新增制裁、制裁解除、制裁豁免、制裁执行。
+      包括对伊朗的石油制裁、金融制裁、个人制裁。
+    keywords:
+      - sanctions
+      - sanctions imposed
+      - sanctions lifted
+      - sanctions relief
+      - sanctions waiver
+      - sanctions enforcement
+      - oil sanctions
+      - financial sanctions
+      - sanctions package
+      - blacklisted
+      - designated
+      - OFAC
+    actors: [US, EU, Iran]
+    examples:
+      - "US imposes new sanctions on Iranian oil exports"
+      - "EU lifts sanctions on Iran following nuclear deal"
+      - "Iran sanctions waiver extended for 90 days"
+
+  # ── 政权与内政 ──────────────────────────────────────────────
+
+  - id: regime_change
+    label: 政权更迭/倒台
+    description: >
+      伊朗政权倒台、政变、革命、最高领袖更替。
+      不包括普通选举（见 domestic_political_change）。
+    keywords:
+      - regime change
+      - regime collapse
+      - regime fall
+      - coup
+      - revolution
+      - overthrow
+      - supreme leader removed
+      - supreme leader dies
+      - khamenei dies
+      - khamenei removed
+      - government overthrown
+      - regime toppled
+    actors: [Iran]
+    examples:
+      - "Mass protests lead to collapse of Iranian government"
+      - "Supreme Leader Khamenei reported in critical condition"
+      - "Military coup attempt in Tehran"
+
+  - id: domestic_political_change
+    label: 国内政治变动
+    description: >
+      选举、政府换届、重大政策转向、内部权力斗争。
+      与 regime_change 的区别：这里是体制内的变化。
+    keywords:
+      - election
+      - elected
+      - new president
+      - presidential election
+      - parliament
+      - reformist
+      - hardliner
+      - moderate
+      - political shift
+      - power struggle
+      - cabinet reshuffle
+    actors: [Iran, US]
+    examples:
+      - "Reformist candidate wins Iranian presidential election"
+      - "New Iranian president signals openness to talks"
+      - "Hardliners consolidate power in Iranian parliament"
+
+  # ── 海上与能源 ──────────────────────────────────────────────
+
+  - id: maritime_incident
+    label: 海上事件/霍尔木兹
+    description: >
+      霍尔木兹海峡相关事件：航运中断、油轮扣押、海上对峙、航运恢复。
+    keywords:
+      - strait of hormuz
+      - hormuz
+      - tanker seized
+      - tanker detained
+      - shipping disrupted
+      - maritime incident
+      - naval confrontation
+      - oil tanker
+      - shipping lane
+      - maritime traffic
+      - shipping traffic
+      - hormuz traffic
+      - hormuz restored
+      - shipping resumed
+      - blockade
+    actors: [Iran, US Navy, IRGC Navy]
+    examples:
+      - "IRGC seizes oil tanker in Strait of Hormuz"
+      - "Shipping traffic through Hormuz drops 40%"
+      - "US Navy escorts commercial vessels through Strait of Hormuz"
+      - "Hormuz shipping traffic fully restored after deal"
+
+  - id: oil_market_impact
+    label: 石油市场影响
+    description: >
+      因美伊冲突导致的石油价格波动、供应中断、OPEC 反应。
+      与 maritime_incident 的区别：这里关注经济影响，不是具体事件。
+    keywords:
+      - oil price
+      - oil surge
+      - oil spike
+      - crude oil
+      - brent
+      - supply disruption
+      - oil supply
+      - OPEC
+      - energy crisis
+      - oil embargo
+    actors: [Iran, OPEC, global markets]
+    examples:
+      - "Oil prices surge 15% on Iran conflict fears"
+      - "OPEC emergency meeting called after Iran tensions"
+
+  # ── 兜底 ────────────────────────────────────────────────────
+
+  - id: unclassified
+    label: 未分类
+    description: >
+      与美伊冲突板块相关但无法归入以上任何事件类型的新闻。
+      这是兜底分类，应尽量减少落入此类的新闻数量。
+    keywords: []
+    actors: []
+    examples: []
