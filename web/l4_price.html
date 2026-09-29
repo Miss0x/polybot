@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L4 决策参考 — 价格通道</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background: #f5f4f0; color: #2c2c2a; line-height: 1.7; }
+  .layout { display: flex; max-width: 1180px; margin: 0 auto; gap: 24px; padding: 24px; }
+  aside { width: 230px; flex-shrink: 0; }
+  aside .card { background: #fff; border-radius: 12px; padding: 18px; border: 0.5px solid #d3d1c7; }
+  aside h3 { font-size: 13px; color: #5f5e5a; font-weight: 500; margin-bottom: 10px; }
+  aside ul { list-style: none; }
+  aside li { padding: 8px 10px; border-radius: 8px; font-size: 13px; margin-bottom: 2px; }
+  aside li.active { background: #eef3fa; color: #185fa5; font-weight: 500; }
+  aside .warn { margin-top: 16px; background: #faf3e6; border: 0.5px solid #efc789; border-radius: 10px; padding: 12px; font-size: 12px; color: #633806; }
+  aside .warn a { color: #854f0b; font-weight: 500; text-decoration: none; display: inline-block; margin-top: 6px; }
+  main { flex: 1; min-width: 0; }
+  header.top { background: #fff; border-radius: 12px; padding: 20px 24px; border: 0.5px solid #d3d1c7; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  h1 { font-size: 17px; font-weight: 500; }
+  .meta { font-size: 12px; color: #888780; }
+  section { background: #fff; border-radius: 12px; padding: 22px 24px; border: 0.5px solid #d3d1c7; margin-bottom: 18px; }
+  h2 { font-size: 14px; font-weight: 500; margin-bottom: 14px; color: #2c2c2a; display: flex; align-items: center; gap: 8px; }
+  h2 .tag { font-size: 11px; background: #eef3fa; color: #185fa5; border-radius: 6px; padding: 2px 8px; font-weight: 500; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; color: #5f5e5a; font-weight: 500; padding: 8px 10px; border-bottom: 1px solid #e5e3da; }
+  td { padding: 8px 10px; border-bottom: 0.5px solid #ecebe3; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .up { color: #3b6d11; font-weight: 500; }
+  .flat { color: #888780; }
+  ol, ul { padding-left: 20px; font-size: 13px; }
+  ol li, ul li { margin-bottom: 8px; }
+  .src { display: inline-block; font-size: 11px; border-radius: 5px; padding: 1px 6px; margin-right: 4px; }
+  .src.t1 { background: #eaf3de; color: #3b6d11; }
+  .src.t2 { background: #e6f1fb; color: #185fa5; }
+  .src.t3 { background: #eeedfe; color: #534ab7; }
+  .src.t5 { background: #fcebeb; color: #a32d2d; }
+  .note { font-size: 12px; color: #888780; background: #f7f6f1; border-radius: 8px; padding: 10px 12px; margin-top: 12px; }
+  .q { font-size: 12px; color: #b4b2a9; }
+  a { color: #185fa5; text-decoration: none; }
+  .shield { background: #faf3e6; border: 0.5px solid #efc789; border-radius: 12px; padding: 18px 20px; margin-bottom: 22px; font-size: 13px; color: #633806; }
+  .shield strong { font-weight: 500; }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="shield">
+    <strong>你正在进入价格通道。</strong> 按设计约定：若尚未在信息通道完成先验判断并写下决策日志第一段，请先回去完成——看价前写的判断，才是衡量锚定效应的样本。
+  </div>
+  <header class="top">
+    <h1>L4 决策参考 — 塞尔维亚选举相关合约盘口</h1>
+    <div class="meta">2026-09-29 23:37 · <a href="index.html">← 返回信息通道</a></div>
+  </header>
+
+  <section>
+    <h2>活跃合约族（Yes 价 / 24h 变化 / 24h 成交 / 流动性 / 结算）</h2>
+    <table>
+      <tr><th>合约</th><th>现价</th><th>24h 变动</th><th>24h 成交</th><th>流动性</th><th>结算</th></tr>
+<tr><td>Will Aleksandar Vučić be the next Prime Minister of Serbia?</td><td>67.0 分</td><td>—</td><td>6,831</td><td>117,308</td><td>2028-06-30</td></tr>
+<tr><td>Will Ilija Srdanović be the next prime minister of Serbia?</td><td>18.5 分</td><td>—</td><td>793</td><td>29,928</td><td>2028-06-30</td></tr>
+<tr><td>Will Miloš Vučević win the next Serbia presidential election?</td><td>36.3 分</td><td>—</td><td>1,048</td><td>28,381</td><td>2028-04-01</td></tr>
+<tr><td>Will Ana Brnabić be the next Prime Minister of Serbia?</td><td>0.4 分</td><td>—</td><td>681</td><td>26,257</td><td>2028-06-30</td></tr>
+<tr><td>Will Ivica Dačić be the next Prime Minister of Serbia?</td><td>2.4 分</td><td>—</td><td>0</td><td>25,562</td><td>2028-07-01</td></tr>
+<tr><td>Will Vladan Đokić win the next Serbia presidential election?</td><td>21.5 分</td><td>—</td><td>0</td><td>23,886</td><td>2028-04-01</td></tr>
+<tr><td>Will Branimir Jovanović be the next Prime Minister of Serbia?</td><td>0.6 分</td><td>—</td><td>4</td><td>23,359</td><td>2028-06-30</td></tr>
+<tr><td>Will Miloš Vučević be the next Prime Minister of Serbia?</td><td>0.3 分</td><td>—</td><td>0</td><td>23,216</td><td>2028-06-30</td></tr>
+<tr><td>Will Đuro Macut be the next Prime Minister of Serbia?</td><td>0.3 分</td><td>—</td><td>0</td><td>22,992</td><td>2028-06-30</td></tr>
+<tr><td>Will Dragan Đilas be the next Prime Minister of Serbia?</td><td>0.6 分</td><td>—</td><td>4</td><td>22,393</td><td>2028-07-01</td></tr>
+<tr><td>Will Vladan Đokić be the next Prime Minister of Serbia?</td><td>3.5 分</td><td>—</td><td>254</td><td>22,332</td><td>2028-07-01</td></tr>
+<tr><td>Will Aleksandar Vučić – United Serbia win the most seats in the 2026 Serbian parliamentary election?</td><td>65.0 分</td><td>—</td><td>1,847</td><td>21,469</td><td>2026-10-25</td></tr>
+<tr><td>Will Student List – Students Win win the most seats in the 2026 Serbian parliamentary election?</td><td>35.5 分</td><td>—</td><td>178</td><td>18,617</td><td>2026-10-25</td></tr>
+<tr><td>Will Ana Brnabić win the next Serbia presidential election?</td><td>17.5 分</td><td>—</td><td>51</td><td>14,886</td><td>2028-04-01</td></tr>
+<tr><td>Will Branimir Nestorović win the next Serbia presidential election?</td><td>0.4 分</td><td>—</td><td>0</td><td>12,222</td><td>2028-04-01</td></tr>
+    </table>
+    <p class="note" style="margin-top:12px">合约族全量 213 个市场（含全部候选人/政党级别子市场），上表按流动性取前 15 个主力。整体薄盘，仓位测算需预留滑点摩擦成本。决策日志（两段式）在生成器 v2 接入表单。</p>
+  </section>
+</div>
+</body>
+</html>

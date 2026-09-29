@@ -108,6 +108,25 @@ def _migrate_schema() -> None:
         ],
     )
 
+    # news_items 表新增 Serbia election pipeline 扩展列
+    _migrate_table(
+        engine, inspector,
+        "news_items",
+        [
+            ("feed_id", "VARCHAR(64)"),
+            ("source_class", "VARCHAR(32)"),
+            ("tier", "VARCHAR(8)"),
+            ("lang", "VARCHAR(8)"),
+            ("title_en", "TEXT"),
+            ("triage_relevant", "INTEGER"),
+            ("variable_ids_json", "TEXT"),
+            ("novelty", "INTEGER"),
+            ("is_new_fact", "INTEGER"),
+            ("triage_method", "VARCHAR(32)"),
+            ("triaged_at", "TIMESTAMP"),
+        ],
+    )
+
 
 def _migrate_table(engine, inspector, table: str, columns: list[tuple[str, str]]) -> None:
 

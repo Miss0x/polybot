@@ -47,10 +47,15 @@ class NewsSource(ABC):
 class RSSSource(NewsSource):
     """通用 RSS / Atom 源。"""
 
-    def __init__(self, feed_url: str, name: str | None = None, timeout: float = 15.0):
+    DEFAULT_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+
+    def __init__(self, feed_url: str, name: str | None = None, timeout: float = 15.0,
+                 user_agent: str | None = None):
         self.feed_url = feed_url
         self._name = name
         self.timeout = timeout
+        # 部分 RSS 站点（如 BIRN/Cloudflare）会拦截无 UA 的客户端
+        self.headers = {"User-Agent": user_agent or self.DEFAULT_UA}
 
     @property
     def name(self) -> str:
@@ -59,7 +64,8 @@ class RSSSource(NewsSource):
     def fetch(self) -> list[NewsItem]:
         # feedparser.parse 不支持 timeout，先用 httpx 拉取内容
         try:
-            with httpx.Client(timeout=self.timeout) as client:
+            with httpx.Client(timeout=self.timeout, headers=self.headers,
+                              follow_redirects=True) as client:
                 response = client.get(self.feed_url)
                 response.raise_for_status()
                 content = response.content

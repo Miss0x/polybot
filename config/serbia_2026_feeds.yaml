@@ -1,0 +1,92 @@
+# =============================================================================
+# serbia_2026_feeds.yaml — 采集管线机器配置（信源手册的扁平化版本）
+# class: core / realtime / corroboration   tier: A1-A4
+# 所有 RSS 已实测可用（2026-09-29）
+# =============================================================================
+election_id: serbia_2026
+vote_date: "2026-10-25"
+
+feeds:
+  # ---- 原生 RSS（直采）----
+  - id: balkan_insight_serbia
+    name: "Balkan Insight (BIRN) Serbia"
+    url: "https://balkaninsight.com/category/bi/serbia/feed/"
+    lang: en
+    source_class: core
+    tier: A2
+
+  - id: danas
+    name: "Danas"
+    url: "https://www.danas.rs/feed/"
+    lang: sr
+    source_class: core
+    tier: A2
+
+  - id: krik
+    name: "KRIK"
+    url: "https://krik.rs/feed/"
+    lang: sr
+    source_class: core
+    tier: A2
+
+  # ---- Google News 万能适配器 ----
+  - id: gn_n1
+    name: "N1 (via Google News)"
+    url: "https://news.google.com/rss/search?q=site:rs.n1info.com+when:2d&hl=sr&gl=RS&ceid=RS:sr"
+    lang: sr
+    source_class: core
+    tier: A2
+
+  - id: gn_vreme
+    name: "Vreme (via Google News)"
+    url: "https://news.google.com/rss/search?q=site:vreme.com+when:3d&hl=sr&gl=RS&ceid=RS:sr"
+    lang: sr
+    source_class: core
+    tier: A2
+
+  - id: gn_izbori_sr
+    name: "Google News SR izbori"
+    url: "https://news.google.com/rss/search?q=izbori+OR+%22lista+studenata%22+OR+anketa+when:2d&hl=sr&gl=RS&ceid=RS:sr"
+    lang: sr
+    source_class: core
+    tier: A2
+
+  - id: gn_vucic_sr
+    name: "Google News SR vucic"
+    url: "https://news.google.com/rss/search?q=vu%C4%8Di%C4%87+when:2d&hl=sr&gl=RS&ceid=RS:sr"
+    lang: sr
+    source_class: core
+    tier: A2
+
+  - id: gn_rik
+    name: "Google News RIK"
+    url: "https://news.google.com/rss/search?q=site:rik.parlament.gov.rs+OR+%22izborna+komisija%22+when:7d&hl=sr&gl=RS&ceid=RS:sr"
+    lang: sr
+    source_class: core
+    tier: A1
+
+  - id: gn_election_en
+    name: "Google News EN election"
+    url: "https://news.google.com/rss/search?q=serbia+election+when:2d&hl=en-US&gl=US&ceid=US:en"
+    lang: en
+    source_class: core
+    tier: A2
+
+  - id: gn_odihr_en
+    name: "Google News EN ODIHR"
+    url: "https://news.google.com/rss/search?q=ODIHR+OR+%22election+observation%22+Serbia+when:7d&hl=en-US&gl=US&ceid=US:en"
+    lang: en
+    source_class: core
+    tier: A1
+
+  - id: gn_polls_en
+    name: "Google News EN polls"
+    url: "https://news.google.com/rss/search?q=Serbia+poll+OR+CRTA+OR+%22Faktor+Plus%22+when:7d&hl=en-US&gl=US&ceid=US:en"
+    lang: en
+    source_class: core
+    tier: A3
+
+# Google News 拉取的条目只含标题+摘要；回抓全文的开关（v1 关闭，v2 开）
+fetch_fulltext: false
+# 每次每 feed 最多入库条数（防单源刷屏）
+max_items_per_feed: 30

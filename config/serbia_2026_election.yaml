@@ -1,0 +1,62 @@
+# =============================================================================
+# serbia_2026_election.yaml — 选举配置：关键变量（分诊挂靠 + 报告仪表盘）
+# 触发器（triggers）供 Flash 插报判定；v1 先实现 threshold/event 两类
+# =============================================================================
+election_id: serbia_2026
+vote_date: "2026-10-25"
+seats_total: 250
+seats_majority: 126
+threshold_pct: 3.0
+
+markets:
+  event_query: "serbia"
+  note: "价格采样用 Gamma public-search 拉取全部 serbia 相关事件"
+
+key_variables:
+  - id: election_date
+    label: "选举日期"
+    state: "10/25 已定（9/9 议会解散）"
+    keywords: ["izbori", "election date", "raspuštanje", "raspustanje", "parlament"]
+  - id: vucic_resignation
+    label: "武契奇辞任总统"
+    state: "宣布将辞任参选，时点待确认"
+    keywords: ["vučić", "vucic", "ostavka", "predsednik", "president resign"]
+  - id: polls_sns_vs_students
+    label: "SNS vs 学生名单民调"
+    state: "机构分歧约 10 点"
+    keywords: ["anketa", "poll", "istrazivanje", "istraživanje", "crtа", "crta", "faktor", "ipsos", "nspm", "support"]
+  - id: coalition
+    label: "联盟结构"
+    state: "SPS 未站队；多党背书学生名单"
+    keywords: ["koalicij", "coalition", "sps", "dačić", "dacic", "backing", "podrška", "podrska", "withdraw"]
+  - id: threshold_parties
+    label: "门槛党格局"
+    state: "NPS-NLS-EU 撤名单并入学生阵营"
+    keywords: ["cenzus", "prag", "threshold", "lista", "nps", "zlf", "poks", "dveri"]
+  - id: sns_list
+    label: "United Serbia 名单"
+    state: "武契奇领衔，RIK 已确认"
+    keywords: ["united serbia", "ujedinjena srbija", "sns", "naprednjaci"]
+  - id: student_party
+    label: "学生名单组织化"
+    state: "11 点纲领已公布"
+    keywords: ["student", "студент", "blokada", "program", "纲领"]
+  - id: fraud_risk
+    label: "选举违规风险"
+    state: "OSCE/ODIHR 派观察团；CeSID 监测"
+    keywords: ["odihr", "osce", "cesid", "irregular", "prekršaj", "prekrsaj", "fraud", "kupovina glasova", "observer"]
+  - id: turnout
+    label: "投票率"
+    state: "暂无近期数据"
+    keywords: ["izlaznost", "turnout"]
+  - id: international
+    label: "国际因素"
+    state: "常规"
+    keywords: ["eu", "russia", "rusija", "ambasada", "embassy", "sanction"]
+
+# Flash 插报触发器（v1 规则版）
+flash_triggers:
+  poll_shift_points: 3.0     # 同机构新民调 vs 前值变动 ≥3 点（需结构化民调，v2 生效）
+  market_move_points: 4.0    # 主合约 24h 价格变动 ≥4 分
+  source_class: core         # 仅核心类来源可触发事件型 Flash
+  tier_a1_any: true          # A1 官方来源的任何相关条目触发

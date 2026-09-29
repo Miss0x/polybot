@@ -1,0 +1,226 @@
+# =============================================================================
+# serbia_2026.yaml v2 — 塞尔维亚 2026-10-25 议会选举信源注册表
+#
+# 2026-09-29 v2 按功能重分类（用户定义的三分法）：
+#   core          核心类：官方 + 主流媒体 —— 事实主干，结论层的唯一合法来源
+#   realtime      实时类：推送型一手信息 —— 抢时效，快但需回核心类验证
+#   corroboration 旁证类：小报/传闻/体验内容 —— 只做佐证与观测，不单独支撑事实
+#
+# 内部保留 authority 等级（A1 官方 / A2 主流 / A3 专业 / A4 边缘）
+# ---------------------------------------------------------------------------
+election:
+  name: "Serbia Parliamentary Election 2026"
+  vote_date: "2026-10-25"
+  seats_total: 250
+  seats_majority: 126
+  threshold_pct: 3.0
+  related_markets:
+    - "next-prime-minister-of-serbia-20260629223938642"
+    - "serbia-parliamentary-election-winner"
+    - "serbia-parliamentary-election-vote-share-margin-of-victory"
+    - "serbia-parliamentary-election-turnout"
+    - "next-serbia-presidential-election-winner"
+
+# ===========================================================================
+# 一、核心类（core）—— 官方 + 主流媒体
+# ===========================================================================
+core:
+  official:            # A1 官方一手
+    - id: rik
+      name: "RIK 共和国选举委员会"
+      url: "https://www.rik.parlament.gov.rs/"
+      lang: sr
+      status: manual
+      role: "名单确认、官方结果、投诉裁定 —— 变量#6/#8 的最终依据"
+    - id: osce_odihr
+      name: "OSCE/ODIHR 选举观察团"
+      url: "https://www.osce.org/odihr/elections/serbia"
+      lang: en
+      status: manual
+      role: "中期/最终报告 —— 变量#8 违规风险核心信源"
+    - id: cesid
+      name: "CeSID 选举监测中心"
+      url: "https://www.cesid.org/"
+      lang: sr
+      status: manual
+    - id: govt
+      name: "塞尔维亚政府公告"
+      url: "https://www.srbija.gov.rs/"
+      lang: sr
+      status: manual
+
+  mainstream:          # A2 主流媒体
+    - id: balkan_insight_serbia
+      name: "Balkan Insight (BIRN) — Serbia"
+      url: "https://balkaninsight.com/category/bi/serbia/"
+      rss: "https://balkaninsight.com/category/bi/serbia/feed/"
+      lang: en
+      status: verified         # RSS 实测 2026-09-29
+    - id: danas
+      name: "Danas 日报"
+      url: "https://www.danas.rs/"
+      rss: "https://www.danas.rs/feed/"
+      lang: sr
+      status: verified
+    - id: krik
+      name: "KRIK 调查新闻中心"
+      url: "https://www.krik.rs/"
+      rss: "https://krik.rs/feed/"
+      lang: sr
+      status: verified
+      note: "定位偏深度调查，同时承担变量#8"
+    - id: n1
+      name: "N1 Television"
+      url: "https://rs.n1info.com/"
+      lang: sr
+      status: tbd              # 无公开 RSS，浏览器人工；后续 RSSHub
+    - id: vreme
+      name: "Vreme 周刊"
+      url: "https://www.vreme.com/"
+      lang: sr
+      status: manual           # Cloudflare 403
+    - id: international
+      name: "Reuters / BBC / AFP 塞尔维亚报道"
+      lang: en
+      status: search_triggered # 用搜索触发，不常驻抓取
+
+  polling:             # A2/A3 民调（归核心类：结论引用的数字必须来自这里）
+    aggregators:
+      - id: poliwave
+        url: "https://www.poliwave.com/rs/gen/polls"
+        status: manual
+      - id: wiki_polling
+        url: "https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_Serbian_parliamentary_election"
+        status: manual           # 可用 Wikipedia API 每日 diff
+    pollsters:
+      - id: crta
+        name: "CRTA (+ Stanford Democracy Action Lab)"
+        bias: independent
+        method_note: "逐党测量 → 小党全低于门槛；注意 fieldwork 与发布日落差"
+      - id: nspm
+        name: "NSPM"
+        bias: centre_right_academic
+        method_note: "联盟选票口径 → 联盟数字天然更高"
+      - id: faktor_plus
+        bias: pro_govt_accused
+      - id: ipsos_serbia
+        bias: pro_govt_accused
+      - id: sprint_insight
+        bias: unknown
+    citation_rule: "五要素缺一不可：机构/立场/fieldwork日期/样本量/口径"
+
+# ===========================================================================
+# 二、实时类（realtime）—— 推送型一手及时信息
+# ===========================================================================
+realtime:
+  wire_agencies:       # 通讯社快讯
+    - id: fonet
+      name: "FoNet"
+      url: "https://www.fonet.rs/"
+      lang: sr
+      status: tbd
+    - id: beta_agency
+      name: "Beta 通讯社"
+      lang: sr
+      status: tbd
+  social_accounts:     # X/TG 实时账号（推送型，需要用户侧通知）
+    - id: europe_elects
+      name: "@EuropeElects"
+      platform: x
+      role: "塞尔维亚民调英文转播 + 席次预估"
+    - id: fbieber
+      name: "@fbieber (Florian Bieber)"
+      platform: x
+      role: "巴尔干学者选情解读"
+    - id: birn_reporters
+      name: "BIRN 驻贝尔格莱德记者"
+      platform: x
+      role: "一线快讯"
+  live_channels:
+    - id: n1_live
+      name: "N1 LIVE 博客（选举日/大事件实时滚动）"
+      role: "投票日与重大事件的主实时源"
+  usage_rule: >
+    实时类信息优先进入待验证队列并触发查证动作；
+    报告中标注"实时待确认"，回核心类验证后升级为正式事实。
+
+# ===========================================================================
+# 三、旁证类（corroboration）—— 小报 / 传闻 / 体验性内容
+# ===========================================================================
+corroboration:
+  tabloids:            # 旁证 + 反向分析对象
+    - id: informer
+      name: "Informer"
+      role: "SNS 叙事放大器；头版议程 = 变量#6 竞选策略观测点。按'竞选信号'分析，不按'事实'引用"
+    - id: telegraf
+      name: "Telegraf"
+      role: "同 Informer"
+  ground_observation:
+    - id: bilibili_filip
+      name: "B站 up主 菲利普"
+      role: "地面情绪/生活视角参考色；事实性内容必须回核心类验证"
+  rumors:
+    - id: social_viral
+      name: "X/TG 热转、匿名爆料、评论区"
+      role: "查证线索池；只进 L1 待验证，标红，永不进结论"
+  usage_rule: >
+    旁证类单独一条不能确立事实；
+    两条独立旁证相互印证 → 升级为'待验证线索'触发核心类查证；
+    旁证与核心类冲突 → 冲突记录进 L3 分歧层。
+
+# ===========================================================================
+# 采集策略 v3（2026-09-29 晚：人工浏览通道全部自动化）
+# 核心：Google News RSS 作为万能适配器 —— 任何站点/语言/主题均可建 feed，
+#       实测每 feed 上限 100 条，N1 三天 89 条、Vreme 七天 100 条，供给充足。
+# ===========================================================================
+collection:
+  direct_rss:          # 原生 RSS 直采（已验证）
+    - balkan_insight_serbia
+    - danas
+    - krik
+  google_news_feeds:   # 万能适配器 feed（query, hl/gl/ceid, 说明）
+    - id: gn_n1
+      query: "site:rs.n1info.com when:2d"
+      locale: "hl=sr&gl=RS&ceid=RS:sr"
+      note: "替代 N1 人工浏览（N1 无原生 RSS）"
+    - id: gn_vreme
+      query: "site:vreme.com when:3d"
+      locale: "hl=sr&gl=RS&ceid=RS:sr"
+      note: "绕过 Vreme 的 Cloudflare（Google 已索引内容）"
+    - id: gn_izbori_sr
+      query: "izbori OR \"lista studenata\" OR anketa when:2d"
+      locale: "hl=sr&gl=RS&ceid=RS:sr"
+      note: "塞语选举主话题流"
+    - id: gn_vucic_sr
+      query: "vučić OR \"Aleksandar Vučić\" when:2d"
+      locale: "hl=sr&gl=RS&ceid=RS:sr"
+      note: "核心人物流"
+    - id: gn_rik
+      query: "site:rik.parlament.gov.rs OR \"izborna komisija\" when:7d"
+      locale: "hl=sr&gl=RS&ceid=RS:sr"
+      note: "RIK 动作监测（站点本身无 feed，但可 HTML 抓取，200 实测）"
+    - id: gn_election_en
+      query: "\"Serbia\" election when:2d"
+      locale: "hl=en-US&gl=US&ceid=US:en"
+      note: "英文选举主话题流（Reuters/BBC/AFP/Balkan Insight 均会汇入）"
+    - id: gn_odihr_en
+      query: "ODIHR OR \"election observation\" Serbia when:7d"
+      locale: "hl=en-US&gl=US&ceid=US:en"
+      note: "选举观察/违规风险流（变量#8）"
+    - id: gn_polls_en
+      query: "Serbia poll OR CRTA OR \"Faktor Plus\" when:7d"
+      locale: "hl=en-US&gl=US&ceid=US:en"
+      note: "英文民调报道流"
+  semi_auto:
+    - wiki_polling     # Wikipedia API 每日 diff（民调表增量）
+    - poliwave         # JS 渲染暂不爬，wiki_polling 覆盖其功能
+  rik_direct:          # RIK 站点 HTML 直抓（200 text/html 实测）
+    url: "https://www.rik.parlament.gov.rs/"
+    mode: scrape
+  human_exception_only: # 人工只剩兜底，不是日常
+    - "自动管道报警时的定向查证"
+    - "投票日（10/25）当天全天盯 N1 LIVE"
+    - "Briefing 阅读与最终决策"
+  schedule: "每 feed 每日 4 次（06/12/18/24 点），Google News 窗口参数保证增量不漏"
+  dedup_rule: "URL 去重 + Google News 聚合去重（同一事件多源合并）；保留最高 authority + 最早时间戳"
+  limitation: "Google News RSS 只给标题+摘要+链接；全文按需回抓原文（RIK/Danas/KRIK 无反爬可直抓）"

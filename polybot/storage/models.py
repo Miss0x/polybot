@@ -56,6 +56,19 @@ class NewsItemORM(Base):
     board_tags: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_utc_now, nullable=False)
 
+    # --- Serbia election pipeline 扩展列（见 db._migrate_schema）---
+    feed_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    source_class: Mapped[str | None] = mapped_column(String(32), nullable=True)   # core/realtime/corroboration
+    tier: Mapped[str | None] = mapped_column(String(8), nullable=True)            # A1-A4
+    lang: Mapped[str | None] = mapped_column(String(8), nullable=True)
+    title_en: Mapped[str | None] = mapped_column(Text, nullable=True)             # 机翻英文标题（管线内语言）
+    triage_relevant: Mapped[int | None] = mapped_column(Integer, nullable=True)   # 0/1/None=未分诊
+    variable_ids_json: Mapped[str | None] = mapped_column(Text, nullable=True)    # 命中的关键变量列表
+    novelty: Mapped[int | None] = mapped_column(Integer, nullable=True)           # 1-5 新颖度
+    is_new_fact: Mapped[int | None] = mapped_column(Integer, nullable=True)       # 0/1 是否含新事实
+    triage_method: Mapped[str | None] = mapped_column(String(32), nullable=True)  # rule_v1 / jev_v1
+    triaged_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
 
 class NewsEventORM(Base):
     __tablename__ = "news_events"
@@ -108,4 +121,59 @@ class NewsMarketLinkORM(Base):
     layer: Mapped[str] = mapped_column(String(32), nullable=False, default="L1_RULE")
     llm_model: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_utc_now, nullable=False)
+
+
+class PollORM(Base):
+    """民调账本：结构化数字，机构偏差与口径逐条标注（ADR D15 原料）。"""
+
+    __tablename__ = "polls"
+    __table_args__ = (
+        UniqueConstraint("pollster", "fieldwork_end", "party", name="uq_pollster_date_party"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    pollster: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    bias: Mapped[str | None] = mapped_column(String(32), nullable=True)  # independent/centre_right_academic/pro_govt_accused/unknown
+    fieldwork_start: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    fieldwork_end: Mapped[datetime | None] = mapped_column(DateTime, nullable=False, index=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    sample_n: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    party: Mapped[str] = mapped_column(String(64), nullable=False)       # SNS / STU / SPS / ...
+    pct: Mapped[float] = mapped_column(Float, nullable=False)
+    method_note: Mapped[str | None] = mapped_column(Text, nullable=True)  # 口径说明（逐党/联盟）
+    source_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_utc_now, nullable=False)
+
+
+class VariableSnapshotORM(Base):
+    """变量档案库：每日每个关键变量一行状态快照（Master Dossier 的数据层）。"""
+
+    __tablename__ = "variable_snapshots"
+    __table_args__ = (UniqueConstraint("election_id", "variable_id", "snapshot_date", name="uq_var_snapshot"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    election_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    variable_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    snapshot_date: Mapped[str] = mapped_column(String(10), nullable=False)  # YYYY-MM-DD（本地日）
+    state_text: Mapped[str] = mapped_column(Text, nullable=False)           # 当前状态描述
+    change_flag: Mapped[str] = mapped_column(String(8), nullable=False, default="flat")  # up/down/flat/new
+    evidence_news_ids_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_utc_now, nullable=False)
+
+
+class JudgmentLogORM(Base):
+    """决策日志：两段式（D13）——看价前 pre 看价后 post，复盘量化的原始数据。"""
+
+    __tablename__ = "judgment_logs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    election_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    market_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    ts: Mapped[datetime] = mapped_column(DateTime, default=_utc_now, nullable=False)
+    stage: Mapped[str] = mapped_column(String(8), nullable=False)           # pre / post
+    direction: Mapped[str | None] = mapped_column(String(16), nullable=True)  # sns / students / other
+    intent_price: Mapped[float | None] = mapped_column(Float, nullable=True)
+    decision: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_ids_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
