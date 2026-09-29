@@ -29,6 +29,20 @@ from polybot.collect.news_source import NewsItem, RSSSource
 from polybot.storage.db import get_session
 from polybot.storage.models import NewsItemORM
 
+# twitterapi.io（按量计费，$0.15/1k tweets）：key 从 .env 读取，绝不入库
+import os
+
+_TWITTER_KEY = os.environ.get("TWITTERAPI_IO_KEY", "")
+if not _TWITTER_KEY:
+    try:
+        for line in (ROOT_ENV := Path(__file__).resolve().parent.parent.parent / ".env").read_text(encoding="utf-8").splitlines():
+            if line.startswith("TWITTERAPI_IO_KEY="):
+                _TWITTER_KEY = line.split("=", 1)[1].strip()
+                break
+    except OSError:
+        pass
+_TWITTER_BASE = "https://api.twitterapi.io"
+
 
 def _utc_now() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
@@ -167,8 +181,15 @@ class FeedCollector:
     # ------------------------------------------------------------------
     def _fetch_one(self, feed: dict) -> list[NewsItem]:
         """抓单个 feed，并给 NewsItem 补充 feed 元数据。"""
-        if feed.get("type") == "telegram_web":
+        ftype = feed.get("type", "rss")
+        if ftype == "telegram_web":
             items = _fetch_telegram_channel(feed["url"], name=feed["name"])
+        elif ftype == "twitter_user":
+            items = _fetch_twitter_user_tweets(feed["handle"], name=feed["name"],
+                                               limit=feed.get("max_items", 20))
+        elif ftype == "twitter_search":
+            items = _fetch_twitter_search(feed["query"], name=feed["name"],
+                                          limit=feed.get("max_items", 25))
         else:
             source = RSSSource(feed["url"], name=feed["name"])
             items = source.fetch()
@@ -197,6 +218,84 @@ def _simhash_hex(title: str) -> str | None:
         return hex(_compute_simhash(title))
     except Exception:
         return None
+
+
+# ---------------------------------------------------------------------------
+# Twitter / X（twitterapi.io）—— 实时类；key 在 .env，按量计费
+# ---------------------------------------------------------------------------
+
+def _twitter_get(path: str, params: dict) -> dict | None:
+    if not _TWITTER_KEY:
+        logger.debug("TWITTERAPI_IO_KEY 未配置，跳过 twitter 源")
+        return None
+    try:
+        with httpx.Client(timeout=25.0) as client:
+            resp = client.get(f"{_TWITTER_BASE}{path}", params=params,
+                              headers={"X-API-Key": _TWITTER_KEY})
+            resp.raise_for_status()
+            data = resp.json()
+            if data.get("status") not in (None, "success"):
+                logger.warning("twitterapi.io 返回异常: {}", data.get("message"))
+                return None
+            return data
+    except Exception as exc:
+        logger.warning("twitterapi.io 请求失败: {}", exc)
+        return None
+
+
+def _fetch_twitter_user_tweets(handle: str, name: str, limit: int = 20) -> list[NewsItem]:
+    """拉取单账号最近推文（不含回复）。url 用推文原链，天然去重。"""
+    data = _twitter_get("/twitter/user/last_tweets", {"userName": handle.lstrip("@")})
+    items: list[NewsItem] = []
+    for t in (data or {}).get("tweets", []):
+        if t.get("isReply"):
+            continue
+        text = (t.get("text") or "").strip()
+        if not text:
+            continue
+        published = None
+        try:
+            from email.utils import parsedate_to_datetime
+            published = parsedate_to_datetime(t["createdAt"]).replace(tzinfo=None)
+        except Exception:
+            pass
+        items.append(NewsItem(
+            title=text.splitlines()[0][:180],
+            url=t.get("url") or f"https://x.com/{handle.lstrip('@')}",
+            source_name=name,
+            published_at=published,
+            raw_text=text[:2000],
+        ))
+        if len(items) >= limit:
+            break
+    return items
+
+
+def _fetch_twitter_search(query: str, name: str, limit: int = 25) -> list[NewsItem]:
+    """关键词搜索流：无需逐个账号句柄，覆盖所有发帖者的塞尔维亚选举内容。"""
+    data = _twitter_get("/twitter/tweet/advanced_search", {"query": query, "queryTag": name})
+    items: list[NewsItem] = []
+    for t in (data or {}).get("tweets", []):
+        text = (t.get("text") or "").strip()
+        if not text:
+            continue
+        author = ((t.get("author") or {}).get("userName")) or "unknown"
+        published = None
+        try:
+            from email.utils import parsedate_to_datetime
+            published = parsedate_to_datetime(t["createdAt"]).replace(tzinfo=None)
+        except Exception:
+            pass
+        items.append(NewsItem(
+            title=text.splitlines()[0][:180],
+            url=t.get("url") or "https://x.com/i/web",
+            source_name=f"{name}(@{author})",
+            published_at=published,
+            raw_text=text[:2000],
+        ))
+        if len(items) >= limit:
+            break
+    return items
 
 
 # ---------------------------------------------------------------------------

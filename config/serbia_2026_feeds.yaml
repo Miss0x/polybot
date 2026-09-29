@@ -95,6 +95,27 @@ feeds:
     tier: A3
     type: telegram_web
 
+  # ---- Twitter/X（twitterapi.io，实时类；key 在 .env，按量计费 $0.15/1k）----
+  # 搜索流：关键词覆盖所有相关发帖者（记者/政客/学生账号无需逐个句柄）
+  - id: tw_search_sr
+    name: "X Search: Serbia election"
+    type: twitter_search
+    query: "(Serbia OR Srbija OR beograd) (izbor OR izbori OR election OR anketa OR poll OR \"student list\") -is:reply"
+    lang: sr,en
+    source_class: realtime
+    tier: A3
+    max_items: 25
+
+  # 账号流（文档已验证的句柄）：武契奇本人=反向分析一手源
+  - id: tw_vucic
+    name: "X @avucic (Vučić)"
+    type: twitter_user
+    handle: avucic
+    lang: sr
+    source_class: corroboration   # 声明源，按旁证逻辑处理
+    tier: A2
+    max_items: 10
+
 # Google News 拉取的条目只含标题+摘要；回抓全文的开关（v1 关闭，v2 开）
 fetch_fulltext: false
 # 每次每 feed 最多入库条数（防单源刷屏）
