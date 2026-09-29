@@ -18,7 +18,9 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
+import httpx
 import yaml
+from bs4 import BeautifulSoup
 from loguru import logger
 from sqlalchemy import select
 
@@ -165,8 +167,11 @@ class FeedCollector:
     # ------------------------------------------------------------------
     def _fetch_one(self, feed: dict) -> list[NewsItem]:
         """抓单个 feed，并给 NewsItem 补充 feed 元数据。"""
-        source = RSSSource(feed["url"], name=feed["name"])
-        items = source.fetch()
+        if feed.get("type") == "telegram_web":
+            items = _fetch_telegram_channel(feed["url"], name=feed["name"])
+        else:
+            source = RSSSource(feed["url"], name=feed["name"])
+            items = source.fetch()
 
         enriched: list[NewsItem] = []
         for it in items:
@@ -192,3 +197,49 @@ def _simhash_hex(title: str) -> str | None:
         return hex(_compute_simhash(title))
     except Exception:
         return None
+
+
+# ---------------------------------------------------------------------------
+# Telegram 公开频道网页版（t.me/s/<channel>）——无需 API，X 账号实时信息的可行采集路径
+# ---------------------------------------------------------------------------
+
+_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+
+
+def _fetch_telegram_channel(channel_url: str, name: str, limit: int = 30,
+                            timeout: float = 20.0) -> list[NewsItem]:
+    """解析 t.me/s/ 页面。消息块含 data-post="channel/id" 与 tgme_widget_message_text。"""
+    with httpx.Client(timeout=timeout, headers={"User-Agent": _UA}, follow_redirects=True) as client:
+        resp = client.get(channel_url)
+        resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, "html.parser")
+
+    items: list[NewsItem] = []
+    for msg in soup.select("div.tgme_widget_message[data-post]"):
+        post = msg.get("data-post", "")           # e.g. EuropeElects/23560
+        time_el = msg.select_one("time[datetime]")
+        text_el = msg.select_one("div.tgme_widget_message_text")
+        if not post or not text_el:
+            continue
+        text = text_el.get_text("\n", strip=True)
+        if not text:
+            continue
+        published = None
+        if time_el:
+            try:
+                published = datetime.fromisoformat(time_el["datetime"]).replace(tzinfo=None)
+            except (ValueError, KeyError):
+                pass
+        first_line = text.splitlines()[0][:180]
+        items.append(
+            NewsItem(
+                title=first_line,
+                url=f"https://t.me/{post.replace('/', '/')}",
+                source_name=name,
+                published_at=published,
+                raw_text=text[:2000],
+            )
+        )
+        if len(items) >= limit:
+            break
+    return items

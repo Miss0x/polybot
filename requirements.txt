@@ -9,4 +9,6 @@ apscheduler>=3.10.0
 loguru>=0.7.0
 feedparser>=6.0.0
 simhash>=2.1.0
+beautifulsoup4>=4.12.0
+deep-translator>=1.11.0
 python-telegram-bot>=21.0.0

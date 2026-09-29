@@ -86,6 +86,15 @@ feeds:
     source_class: core
     tier: A3
 
+  # ---- Telegram 实时通道（实时类，网页版免 API）----
+  - id: tg_europe_elects
+    name: "Europe Elects (Telegram)"
+    url: "https://t.me/s/EuropeElects"
+    lang: en
+    source_class: realtime
+    tier: A3
+    type: telegram_web
+
 # Google News 拉取的条目只含标题+摘要；回抓全文的开关（v1 关闭，v2 开）
 fetch_fulltext: false
 # 每次每 feed 最多入库条数（防单源刷屏）
