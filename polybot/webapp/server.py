@@ -223,6 +223,108 @@ def l4_page() -> FileResponse:
     return FileResponse(WEB_DIR / "l4_price.html")
 
 
+# ---------------------------------------------------------------------------
+# 决策日志（两段式，ADR D13）
+# ---------------------------------------------------------------------------
+
+_LOG_HTML = """<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>决策日志 — 两段式</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Segoe UI","Microsoft YaHei",sans-serif; background:#f5f4f0; color:#2c2c2a; line-height:1.7; }
+  .wrap { max-width:760px; margin:0 auto; padding:32px 24px; }
+  h1 { font-size:17px; font-weight:500; margin-bottom:6px; }
+  .meta { font-size:12px; color:#888780; margin-bottom:20px; }
+  .card { background:#fff; border-radius:12px; padding:20px 22px; border:0.5px solid #d3d1c7; margin-bottom:18px; }
+  h2 { font-size:14px; font-weight:500; margin-bottom:10px; }
+  label { display:block; font-size:12px; color:#5f5e5a; margin:10px 0 4px; }
+  input, select, textarea { width:100%; padding:9px 12px; border:0.5px solid #d3d1c7; border-radius:8px; font-size:13px; font-family:inherit; }
+  textarea { min-height:64px; resize:vertical; }
+  button { border:none; border-radius:10px; padding:11px 20px; font-size:14px; cursor:pointer; background:#185fa5; color:#fff; width:100%; margin-top:14px; }
+  .ok { background:#eaf3de; color:#3b6d11; border-radius:8px; padding:10px 12px; font-size:13px; margin-top:12px; display:none; }
+  .hint { font-size:12px; color:#888780; background:#f7f6f1; border-radius:8px; padding:10px 12px; margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>决策日志</h1>
+  <div class="meta">两段式（D13）：先在信息通道读完简报 → 填第一段 → 打开价格通道 → 填第二段。两段差异 = 锚定效应的测量样本。</div>
+  <div class="card">
+    <h2>第一段 · 看价前</h2>
+    <div class="hint">此刻你还没看盘口。凭 L0-L3 的信息写。</div>
+    <label>合约方向</label>
+    <select id="pre_dir">
+      <option value="sns">看 SNS / 执政方</option>
+      <option value="students">看学生名单 / 反对派</option>
+      <option value="other">其他/说不清</option>
+    </select>
+    <label>意向价位（低于多少分你愿意买，0.01-0.99；没有就留空）</label>
+    <input id="pre_price" placeholder="如 0.45">
+    <label>依据（简要：哪些事实/变量支撑你）</label>
+    <textarea id="pre_evidence"></textarea>
+    <label>我可能错在哪（强制：写一条反方观点）</label>
+    <textarea id="pre_risk"></textarea>
+    <button onclick="submitLog('pre')">保存第一段</button>
+    <div id="ok1" class="ok">已保存。现在可以去打开价格通道了。</div>
+  </div>
+  <div class="card">
+    <h2>第二段 · 看价后</h2>
+    <label>最终决策</label>
+    <textarea id="post_decision" placeholder="如：以 0.52 买入 SNS 合约 $X；或不动作，挂 0.45 等待"></textarea>
+    <label>相对第一段的改动与理由（没改就写"一致"）</label>
+    <textarea id="post_change"></textarea>
+    <button onclick="submitLog('post')">保存第二段</button>
+    <div id="ok2" class="ok">已保存。结算后复盘会对比两段。</div>
+  </div>
+</div>
+<script>
+async function submitLog(stage) {
+  const body = {
+    stage: stage,
+    direction: document.getElementById('pre_dir').value,
+    intent_price: parseFloat(document.getElementById('pre_price').value) || null,
+    decision: stage === 'pre'
+      ? ('方向:' + document.getElementById('pre_dir').value + ' | 依据:' + document.getElementById('pre_evidence').value + ' | 可能错在:' + document.getElementById('pre_risk').value)
+      : document.getElementById('post_decision').value,
+    notes: stage === 'pre' ? '' : document.getElementById('post_change').value,
+  };
+  const r = await (await fetch('/api/judgment', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)})).json();
+  document.getElementById(stage === 'pre' ? 'ok1' : 'ok2').style.display = 'block';
+}
+</script>
+</body>
+</html>"""
+
+
+@app.get("/log", response_class=HTMLResponse)
+def log_page() -> str:
+    return _LOG_HTML
+
+
+@app.post("/api/judgment")
+def api_judgment(payload: dict) -> JSONResponse:
+    from polybot.storage.db import get_session
+    from polybot.storage.models import JudgmentLogORM
+    from polybot.storage.db import init_db
+
+    init_db()
+    with get_session() as session:
+        session.add(JudgmentLogORM(
+            election_id="serbia_2026",
+            market_id=payload.get("market_id"),
+            stage=payload.get("stage", "pre")[:8],
+            direction=payload.get("direction"),
+            intent_price=payload.get("intent_price"),
+            decision=payload.get("decision"),
+            notes=payload.get("notes"),
+        ))
+        session.commit()
+    return JSONResponse({"ok": True})
+
+
 @app.post("/api/run")
 def api_run() -> JSONResponse:
     if _run_state["running"]:

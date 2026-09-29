@@ -76,6 +76,19 @@ def _esc(text: str) -> str:
     return html_mod.escape(text or "")
 
 
+def _flash_banner(data: BriefingData) -> str:
+    flashes = data.stats.get("flash") or []
+    if not flashes:
+        return ""
+    items = "".join(f"<li>{_esc(x)}</li>" for x in flashes)
+    return (
+        '<div style="background:#faf3e6;border:0.5px solid #efc789;border-radius:12px;'
+        'padding:16px 20px;margin-bottom:18px;font-size:13px;color:#633806">'
+        '<strong>⚡ Flash 触发（变化检测命中，建议优先读）：</strong>'
+        f'<ul style="margin:6px 0 0 20px">{items}</ul></div>'
+    )
+
+
 def _local_today() -> str:
     return datetime.now().strftime("%Y-%m-%d")
 
@@ -199,6 +212,18 @@ def gather_data(election_cfg_path: Path, narrative_cfg_path: Path,
 
         data.stats["facts_total"] = len(data.facts)
 
+    # ---- Flash 触发器（ADR：变化靠算不靠人）----
+    flashes: list[str] = []
+    for m in data.markets:
+        if m["change"] is not None and abs(m["change"]) >= 4.0:
+            flashes.append(
+                f"盘口异动：{m['question']} 24h 变动 {m['change']:+.1f} 分（现价 {m['price'] * 100:.1f}）"
+            )
+    for f in data.facts:
+        if f["tier"] == "T1":
+            flashes.append(f"T1 官方信源更新：{f['title']}")
+    data.stats["flash"] = flashes[:5]
+
     data.stats["generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
     return data
 
@@ -275,6 +300,7 @@ def render_index(data: BriefingData, reports_history: list[str]) -> str:
     </div>
   </aside>
   <main>
+    {_flash_banner(data)}
     <header class="top">
       <div>
         <h1>Serbia 2026 议会选举 — Decision Briefing</h1>

@@ -49,8 +49,25 @@ class SerbiaTriage:
 
     # ------------------------------------------------------------------
     def triage_pending(self, batch_limit: int = 500) -> dict:
-        """对未分诊条目执行规则分诊并入库。"""
-        stats = {"pending": 0, "relevant": 0, "irrelevant": 0}
+        """对未分诊条目执行分诊并入库。有 LLM key 走语义分诊，否则规则版。"""
+        from polybot.llm_client import llm_available, chat_json
+
+        use_llm = llm_available()
+        stats = {"pending": 0, "relevant": 0, "irrelevant": 0, "llm": 0, "rule": 0}
+
+        sys_prompt = (
+            "You are a strict classifier for a Serbian 2026-10-25 parliamentary "
+            "election intelligence pipeline. For each news item, answer four CLOSED "
+            "questions only:\n"
+            "1) relevant: is it about Serbian politics/elections? true/false\n"
+            "2) variables: pick from this fixed list (empty if none): "
+            + ",".join(v["id"] for v in self.variables) + "\n"
+            "3) novelty: 1-5 (5=decisive new fact, 3=incremental, 1=repetition/noise)\n"
+            "4) new_fact: does it contain a NEW factual claim (not opinion/analysis)?\n"
+            'Respond with ONLY a JSON array, same order as input, items like '
+            '{"i":0,"relevant":true,"variables":["coalition"],"novelty":4,"new_fact":true}. '
+            "No prose."
+        )
 
         with get_session() as session:
             rows = session.execute(
@@ -61,34 +78,71 @@ class SerbiaTriage:
             ).scalars().all()
 
             stats["pending"] = len(rows)
+
+            # 先做 LLM 批量语义分诊（一批 15 条），结果按行 id 存表
+            llm_results: dict[int, dict] = {}
+            if use_llm:
+                for i in range(0, len(rows), 15):
+                    chunk = rows[i:i + 15]
+                    user_prompt = "\n".join(
+                        f'{{"i":{j},"title":{json.dumps((r.title_en or r.title)[:220], ensure_ascii=False)}}}'
+                        for j, r in enumerate(chunk)
+                    )
+                    parsed = chat_json(sys_prompt, user_prompt, max_tokens=1200)
+                    if isinstance(parsed, list):
+                        for x in parsed:
+                            if isinstance(x, dict) and isinstance(x.get("i"), int) and 0 <= x["i"] < len(chunk):
+                                llm_results[chunk[x["i"]].id] = x
+                    else:
+                        logger.warning("LLM 分诊批返回不可解析（{} 条降级规则）", len(chunk))
+
             now = datetime.now(timezone.utc).replace(tzinfo=None)
-
             for row in rows:
-                text = " ".join(
-                    x for x in (row.title, row.title_en, row.raw_text or "") if x
-                ).lower()
-
-                hit_vars, strength = self._match_variables(text)
-                relevant = 1 if (hit_vars or self._mentions_election(text)) else 0
-                novelty = self._novelty(row, strength)
-                new_fact = self._is_new_fact(text) if relevant else None
-
-                row.triage_relevant = relevant
-                row.variable_ids_json = json.dumps(hit_vars, ensure_ascii=False) if hit_vars else None
-                row.novelty = novelty
-                row.is_new_fact = new_fact
-                row.triage_method = TRIAGE_METHOD
-                row.triaged_at = now
-
-                if relevant:
-                    stats["relevant"] += 1
+                item = llm_results.get(row.id)
+                if item is not None:
+                    self._apply(row, item, stats)
                 else:
-                    stats["irrelevant"] += 1
+                    self._apply_rules(row, stats)
 
             session.commit()
 
         logger.info("分诊完成: {}", stats)
         return stats
+
+    # ------------------------------------------------------------------
+    def _apply(self, row: NewsItemORM, item: dict, stats: dict) -> None:
+        """应用单条 LLM 分诊结果。"""
+        relevant = 1 if item.get("relevant") else 0
+        var_ids = [v for v in (item.get("variables") or [])
+                   if v in {x["id"] for x in self.variables}]
+        try:
+            novelty = max(1, min(5, int(item.get("novelty") or 3)))
+        except (TypeError, ValueError):
+            novelty = 3
+        row.triage_relevant = relevant
+        row.variable_ids_json = json.dumps(var_ids, ensure_ascii=False) if var_ids else None
+        row.novelty = novelty if relevant else None
+        row.is_new_fact = 1 if (relevant and item.get("new_fact")) else (0 if relevant else None)
+        row.triage_method = "llm_v1"
+        row.triaged_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        stats["relevant" if relevant else "irrelevant"] += 1
+        stats["llm"] += 1
+
+    def _apply_rules(self, row: NewsItemORM, stats: dict) -> None:
+        """规则分诊（降级路径 / 无 LLM key 时的默认路径）。"""
+        text = " ".join(
+            x for x in (row.title, row.title_en, row.raw_text or "") if x
+        ).lower()
+        hit_vars, _ = self._match_variables(text)
+        relevant = 1 if (hit_vars or self._mentions_election(text)) else 0
+        row.triage_relevant = relevant
+        row.variable_ids_json = json.dumps(hit_vars, ensure_ascii=False) if hit_vars else None
+        row.novelty = self._novelty(row, len(hit_vars)) if relevant else None
+        row.is_new_fact = (self._is_new_fact(text) if relevant else None)
+        row.triage_method = "rule_v1"
+        row.triaged_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        stats["relevant" if relevant else "irrelevant"] += 1
+        stats["rule"] += 1
 
     # ------------------------------------------------------------------
     def _match_variables(self, text: str) -> tuple[list[str], int]:

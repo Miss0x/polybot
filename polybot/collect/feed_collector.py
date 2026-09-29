@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -85,15 +86,44 @@ def _clean_google_news_title(title: str) -> tuple[str, str | None]:
     return title.strip(), None
 
 
-def _translate_to_en(text: str) -> str | None:
-    """机翻到英文。fail-open：任何异常返回 None，绝不影响入库。"""
+def _translate_batch(titles: list[str]) -> list[str | None]:
+    """批量翻译到英文。优先 LLM（一次调用翻整批），失败逐条 deep-translator，再失败返回 None。"""
+    if not titles:
+        return []
+    # 1) LLM 批量
     try:
-        from deep_translator import GoogleTranslator
+        from polybot.llm_client import chat_json
 
-        return GoogleTranslator(source="auto", target="en").translate(text)
-    except Exception as exc:  # 网络波动/限流等一律降级
-        logger.debug("翻译失败（降级为仅原文）: {}", exc)
-        return None
+        user_prompt = "\n".join(f'{{"i":{i},"title":{json.dumps(t, ensure_ascii=False)}}}'
+                                for i, t in enumerate(titles))
+        parsed = chat_json(
+            "You are a translation engine. Translate each headline to English. "
+            "Keep proper nouns (names/parties). Respond ONLY a JSON array like "
+            '[{"i":0,"en":"..."},...]. No prose.',
+            user_prompt, max_tokens=2000,
+        )
+        if isinstance(parsed, list):
+            out: dict[int, str] = {}
+            for x in parsed:
+                if isinstance(x, dict) and isinstance(x.get("i"), int) and x.get("en"):
+                    out[x["i"]] = str(x["en"])
+            return [out.get(i) for i in range(len(titles))]
+    except Exception as exc:
+        logger.debug("LLM 批量翻译失败: {}", exc)
+    # 2) deep-translator 逐条
+    results: list[str | None] = []
+    for t in titles:
+        try:
+            from deep_translator import GoogleTranslator
+            results.append(GoogleTranslator(source="auto", target="en").translate(t))
+        except Exception:
+            results.append(None)
+    return results
+
+
+def _translate_to_en(text: str) -> str | None:
+    """单条翻译（兼容旧调用）。"""
+    return _translate_batch([text])[0]
 
 
 class FeedCollector:
@@ -140,14 +170,22 @@ class FeedCollector:
                 stats.dropped_url += result.dropped_by_url
                 stats.dropped_simhash += result.dropped_by_simhash
 
-                translated_count = 0
-                for item in result.new_items[: self.max_items_per_feed]:
+                new_items = result.new_items[: self.max_items_per_feed]
+
+                # 批量翻译（LLM 一次翻整批；失败逐条 deep-translator；再失败留原文）
+                to_translate = [it.title for it in new_items
+                                if self.translate and feed["lang"] != "en"
+                                and stats.translated < self.translate_cap]
+                translations = _translate_batch(to_translate) if to_translate else []
+                if any(translations):
+                    stats.translated += sum(1 for t in translations if t)
+                    logger.info("feed [{}] 翻译 {} 条", feed["id"], sum(1 for t in translations if t))
+
+                t_iter = iter(translations)
+                for item in new_items:
                     title_en = None
-                    if self.translate and feed["lang"] != "en" and stats.translated < self.translate_cap:
-                        title_en = _translate_to_en(item.title)
-                        if title_en:
-                            translated_count += 1
-                            stats.translated += 1
+                    if self.translate and feed["lang"] != "en" and stats.translated <= self.translate_cap:
+                        title_en = next(t_iter, None)
 
                     simhash_hex = _simhash_hex(item.title)
                     orm = NewsItemORM(
@@ -169,9 +207,6 @@ class FeedCollector:
                     if simhash_hex:
                         existing_simhashes.append(simhash_hex)
                     stats.inserted += 1
-
-                if translated_count:
-                    logger.info("feed [{}] 翻译 {} 条", feed["id"], translated_count)
 
             session.commit()
 
