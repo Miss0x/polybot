@@ -106,7 +106,7 @@ feeds:
     tier: A3
     max_items: 25
 
-  # 账号流（文档已验证的句柄）：武契奇本人=反向分析一手源
+  # 账号流（句柄已经 API 验证，2026-09-30）
   - id: tw_vucic
     name: "X @avucic (Vučić)"
     type: twitter_user
@@ -114,6 +114,24 @@ feeds:
     lang: sr
     source_class: corroboration   # 声明源，按旁证逻辑处理
     tier: A2
+    max_items: 10
+
+  - id: tw_brnabic
+    name: "X @anabrnabic (Brnabić)"
+    type: twitter_user
+    handle: anabrnabic
+    lang: sr
+    source_class: corroboration   # 反向分析对象：SNS 议程的一手出口
+    tier: A2
+    max_items: 10
+
+  - id: tw_tepic
+    name: "X @MarinikaTepic (Tepić)"
+    type: twitter_user
+    handle: MarinikaTepic
+    lang: sr
+    source_class: realtime        # 反对派内部动态的一手声明
+    tier: A3
     max_items: 10
 
 # Google News 拉取的条目只含标题+摘要；回抓全文的开关（v1 关闭，v2 开）

@@ -63,21 +63,22 @@ def main() -> None:
             except Exception as exc:
                 print(f"= {label}: 请求失败 {exc}")
                 continue
-            profile = data or {}
-            if profile.get("unavailable") or not profile.get("userName"):
+            profile = ((data.get("data") or {}) if isinstance(data, dict) else {})
+            if not profile.get("userName"):
                 print(f"= {label}: 不存在或不可用（句柄需修正）")
                 print()
                 continue
-            bio = (profile.get("profile_bio") or {}).get("description", "") or ""
-            print(f"= @{profile['userName']} [GUESS 标记: {label}] {profile.get('name', '')}")
-            print(f"  粉丝 {profile.get('followers', '?')} | 简介: {bio[:160]}")
+            bio = profile.get("description") or ""
+            print(f"= @{profile['userName']}（输入: {label}）{profile.get('name', '')}")
+            print(f"  粉丝 {profile.get('followers', '?')} | 认证: {profile.get('verifiedType') or '-'} | 简介: {bio[:160]}")
             try:
                 tw = client.get(
                     "https://api.twitterapi.io/twitter/user/last_tweets",
                     params={"userName": profile["userName"]},
                     headers={"X-API-Key": KEY},
                 ).json()
-                for t in (tw.get("tweets") or [])[:3]:
+                tweets = ((tw.get("data") or {}).get("tweets")) or tw.get("tweets") or []
+                for t in tweets[:3]:
                     if t.get("isReply"):
                         continue
                     print(f"  · {(t.get('text') or '').splitlines()[0][:100]}")
