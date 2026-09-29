@@ -17,10 +17,13 @@ from __future__ import annotations
 import subprocess
 import sys
 import threading
+import time
+import webbrowser
 from datetime import datetime
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -31,6 +34,13 @@ PIPELINE = ROOT / "scripts" / "run_serbia_pipeline.py"
 TASK_NAMES = ["Polybot_Serbia_0600", "Polybot_Serbia_1200", "Polybot_Serbia_1800", "Polybot_Serbia_2355"]
 
 app = FastAPI(title="Polybot Control Panel")
+# 允许从 file:// 直接打开的简报页（web/index.html）跨域调用本服务的 API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 _run_lock = threading.Lock()
 _run_state: dict = {"running": False, "last_started": None, "last_finished": None, "last_log": ""}
@@ -254,6 +264,9 @@ def api_toggle(payload: dict) -> JSONResponse:
 def main() -> None:
     import uvicorn
 
+    # 服务就绪后自动打开浏览器（延迟 1.5s 等端口起来，避免首次加载失败）
+    threading.Timer(1.5, lambda: webbrowser.open("http://127.0.0.1:8787/")).start()
+    print("Polybot 控制面板: http://127.0.0.1:8787  （Ctrl+C 停止）")
     uvicorn.run(app, host="127.0.0.1", port=8787, log_level="warning")
 
 

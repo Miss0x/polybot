@@ -270,7 +270,7 @@ def render_index(data: BriefingData, reports_history: list[str]) -> str:
       <div class="warn">
         价格通道已按设计分离。<br>建议先读完本页全部信息，再自行决定是否打开。
         <a href="l4_price.html">→ L4 决策参考（市场盘口）</a>
-        <a href="/control" style="margin-top:8px">→ 控制面板（手动采集 / 定时开关）</a>
+        <a href="http://127.0.0.1:8787/" style="margin-top:8px">→ 控制面板（手动采集 / 定时开关，需启动本地服务）</a>
       </div>
     </div>
   </aside>
