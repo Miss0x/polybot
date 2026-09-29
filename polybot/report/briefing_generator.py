@@ -88,7 +88,7 @@ class BriefingData:
     variables: list[dict] = field(default_factory=list)   # L0 行
     facts: list[dict] = field(default_factory=list)       # L1 行
     l2_impacts: list[dict] = field(default_factory=list)
-    l3_unknowns: list[str] = field(default_factory=list)
+    l3_watch: list[dict] = field(default_factory=list)
     l3_contra_students: list[str] = field(default_factory=list)
     l3_contra_sns: list[str] = field(default_factory=list)
     l3_break: list[str] = field(default_factory=list)
@@ -107,7 +107,7 @@ def gather_data(election_cfg_path: Path, narrative_cfg_path: Path,
         election_id=ecfg["election_id"],
         vote_date=ecfg["vote_date"],
         l2_impacts=ncfg.get("l2_impacts", []),
-        l3_unknowns=ncfg.get("l3_unknowns", []),
+        l3_watch=ncfg.get("l3_watch", []),
         l3_contra_students=ncfg.get("l3_contra_students", []),
         l3_contra_sns=ncfg.get("l3_contra_sns", []),
         l3_break=ncfg.get("l3_break_triggers", []),
@@ -241,7 +241,11 @@ def render_index(data: BriefingData, reports_history: list[str]) -> str:
         for x in data.l2_impacts
     )
 
-    l3u = "\n".join(f"<li>{_esc(x)}</li>" for x in data.l3_unknowns)
+    l3u = "\n".join(
+        f'<li><strong>{_esc(x["q"])}</strong><br>'
+        f'<span class="q">为什么要盯：{_esc(x["why"])}</span></li>'
+        for x in data.l3_watch
+    )
     l3a = "\n".join(f"<li>{_esc(x)}</li>" for x in data.l3_contra_students)
     l3b = "\n".join(f"<li>{_esc(x)}</li>" for x in data.l3_contra_sns)
     l3t = " / ".join(_esc(x) for x in data.l3_break)
@@ -266,6 +270,7 @@ def render_index(data: BriefingData, reports_history: list[str]) -> str:
       <div class="warn">
         价格通道已按设计分离。<br>建议先读完本页全部信息，再自行决定是否打开。
         <a href="l4_price.html">→ L4 决策参考（市场盘口）</a>
+        <a href="/control" style="margin-top:8px">→ 控制面板（手动采集 / 定时开关）</a>
       </div>
     </div>
   </aside>
@@ -294,27 +299,32 @@ def render_index(data: BriefingData, reports_history: list[str]) -> str:
     </section>
 
     <section>
-      <h2>L2 影响分析 <span class="tag">仅逻辑推演</span></h2>
+      <h2>L2 影响分析 <span class="tag">这些变化意味着什么</span></h2>
       <ul>
 {l2_html}
       </ul>
     </section>
 
     <section>
-      <h2>L3 反方与未知 <span class="tag">pre-mortem 强制</span></h2>
-      <p style="font-size:13px;font-weight:500;margin-bottom:6px">最大未知项：</p>
-      <ol>
+      <h2>L3 下注前的思维体检 <span class="tag">不是作业，是对照卡</span></h2>
+      <div class="note" style="margin:0 0 14px">
+        <strong>这一层怎么用：</strong>它不需要你去搜集任何材料——线索会由后续每天的简报自动补充。你只需要做两件事：<br>
+        ① 下面"系统在盯的事"告诉你哪些关键问题<b>还没有答案</b>——下注前先确认自己接受这种"不知道"；<br>
+        ② "自检卡"是反向质检：<b>想买谁，就先读对方的反驳</b>。任何一条你说服不了自己，就先缓一缓，把疑问写进决策日志。
+      </div>
+      <p style="font-size:13px;font-weight:500;margin-bottom:6px">系统在盯的事（还没定，别当已有答案）：</p>
+      <ul>
 {l3u}
-      </ol>
-      <p style="font-size:13px;font-weight:500;margin:12px 0 6px">若看好反对派，必须回答：</p>
-      <ul>
+      </ul>
+      <p style="font-size:13px;font-weight:500;margin:12px 0 6px">自检卡 A —— 想买学生名单（反对派）？先过这三关：</p>
+      <ol>
 {l3a}
-      </ul>
-      <p style="font-size:13px;font-weight:500;margin:12px 0 6px">若看好执政方，必须回答：</p>
-      <ul>
+      </ol>
+      <p style="font-size:13px;font-weight:500;margin:12px 0 6px">自检卡 B —— 想买 SNS（执政方）？先过这两关：</p>
+      <ol>
 {l3b}
-      </ul>
-      <p style="font-size:13px;font-weight:500;margin:12px 0 6px">推翻格局的触发信息：</p>
+      </ol>
+      <p style="font-size:13px;font-weight:500;margin:12px 0 6px">出现这些新闻，之前所有判断推倒重来：</p>
       <p style="font-size:13px">{l3t}</p>
     </section>
 
@@ -396,11 +406,11 @@ def render_markdown(data: BriefingData) -> str:
     lines += ["", "## L2 影响分析", ""]
     for x in data.l2_impacts:
         lines.append(f"- **{x['title']}**：{x['text']}")
-    lines += ["", "## L3 反方与未知", "", "**未知项**", ""]
-    lines += [f"- {x}" for x in data.l3_unknowns]
-    lines += ["", "**若看好反对派**", ""]
+    lines += ["", "## L3 下注前的思维体检", "", "**系统在盯的事**", ""]
+    lines += [f"- **{x['q']}** —— {x['why']}" for x in data.l3_watch]
+    lines += ["", "**自检卡 A（想买学生名单先过这三关）**", ""]
     lines += [f"- {x}" for x in data.l3_contra_students]
-    lines += ["", "**若看好执政方**", ""]
+    lines += ["", "**自检卡 B（想买 SNS 先过这两关）**", ""]
     lines += [f"- {x}" for x in data.l3_contra_sns]
     lines += ["", f"**推翻格局触发**：{' / '.join(data.l3_break)}", ""]
     return "\n".join(lines)
