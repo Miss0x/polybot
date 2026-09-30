@@ -72,15 +72,23 @@ def step_report() -> None:
     logger.info("报告渲染: {}", result)
 
 
+def step_judgment() -> None:
+    from polybot.report.judgment_generator import generate
+
+    result = generate(ELECTION_CFG, CONFIG / "serbia_2026_judgments.yaml")
+    logger.info("判断页渲染: {}", result)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Serbia election pipeline")
     parser.add_argument("--collect", action="store_true", help="只跑采集")
     parser.add_argument("--triage", action="store_true", help="只跑分诊")
     parser.add_argument("--markets", action="store_true", help="只跑价格采样")
     parser.add_argument("--report", action="store_true", help="只重渲染报告")
+    parser.add_argument("--judgment", action="store_true", help="只重渲染判断页")
     args = parser.parse_args()
 
-    run_all = not (args.collect or args.triage or args.markets or args.report)
+    run_all = not (args.collect or args.triage or args.markets or args.report or args.judgment)
 
     init_logging()
     init_db()
@@ -93,6 +101,8 @@ def main() -> None:
         step_markets()
     if run_all or args.report:
         step_report()
+    if run_all or args.judgment:
+        step_judgment()
 
     logger.info("管线执行完毕 ✅ 打开 web/index.html 查看今日简报")
 

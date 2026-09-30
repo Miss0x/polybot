@@ -1,0 +1,39 @@
+# =============================================================================
+# serbia_2026_judgments.yaml — 方向判断题清单（判断页的数据源）
+#
+# 每题 = 一个封闭问题 + 关联变量（决定证据包范围）+ 关联合约（市场对照价）
+# 判断由 LLM 基于账本证据生成（yes/no/unclear + 置信度 + 佐证 + 反方 + 翻转条件），
+# 严格禁止概率输出（ADR D13/D15 边界：方向判断 ≠ 概率量化）
+# =============================================================================
+election_id: serbia_2026
+
+questions:
+  - id: sns_most_seats
+    question: "Will the SNS-led 'United Serbia' list win the most seats in the 2026-10-25 Serbian parliamentary election?"
+    question_cn: "SNS 领衔的'联合塞尔维亚'名单会赢得最多席位吗？"
+    variables: [polls_sns_vs_students, coalition, sns_list, threshold_parties, student_party]
+    market_hint: "most seats"
+
+  - id: students_most_seats
+    question: "Will the Student List win the most seats in the 2026-10-25 Serbian parliamentary election?"
+    question_cn: "学生名单会赢得最多席位吗？"
+    variables: [polls_sns_vs_students, coalition, student_party, threshold_parties]
+    market_hint: "most seats"
+
+  - id: sns_majority
+    question: "Will the SNS-led bloc win an absolute majority (126+ of 250 seats) in the 2026-10-25 Serbian parliamentary election?"
+    question_cn: "SNS 集团会赢得绝对多数（126+ 席）吗？"
+    variables: [polls_sns_vs_students, coalition, threshold_parties, turnout]
+    market_hint: "parliamentary election"
+
+  - id: vucic_next_pm
+    question: "Will Aleksandar Vučić become the next Prime Minister of Serbia?"
+    question_cn: "武契奇会成为下届塞尔维亚总理吗？"
+    variables: [vucic_resignation, sns_list, coalition, polls_sns_vs_students]
+    market_hint: "prime minister"
+
+  - id: presidential_same_day
+    question: "Will Serbia's presidential election be held on the same day as the parliamentary election (2026-10-25)?"
+    question_cn: "总统补选会与 10/25 议会选举同日举行吗？"
+    variables: [vucic_resignation, election_date]
+    market_hint: "presidential"
