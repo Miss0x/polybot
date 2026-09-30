@@ -62,6 +62,7 @@ class NewsItemORM(Base):
     tier: Mapped[str | None] = mapped_column(String(8), nullable=True)            # A1-A4
     lang: Mapped[str | None] = mapped_column(String(8), nullable=True)
     title_en: Mapped[str | None] = mapped_column(Text, nullable=True)             # 机翻英文标题（管线内语言）
+    title_zh: Mapped[str | None] = mapped_column(Text, nullable=True)             # 机翻中文标题（展示层）
     triage_relevant: Mapped[int | None] = mapped_column(Integer, nullable=True)   # 0/1/None=未分诊
     variable_ids_json: Mapped[str | None] = mapped_column(Text, nullable=True)    # 命中的关键变量列表
     novelty: Mapped[int | None] = mapped_column(Integer, nullable=True)           # 1-5 新颖度

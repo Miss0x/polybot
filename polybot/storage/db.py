@@ -118,6 +118,7 @@ def _migrate_schema() -> None:
             ("tier", "VARCHAR(8)"),
             ("lang", "VARCHAR(8)"),
             ("title_en", "TEXT"),
+            ("title_zh", "TEXT"),
             ("triage_relevant", "INTEGER"),
             ("variable_ids_json", "TEXT"),
             ("novelty", "INTEGER"),

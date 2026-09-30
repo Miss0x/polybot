@@ -139,8 +139,23 @@ def gather_data(election_cfg_path: Path, narrative_cfg_path: Path,
             .limit(facts_limit)
         ).scalars().all()
 
+        # 中文标题自愈：展示层缺失 title_zh 的条目批量补译（一次 LLM 调用）
+        missing_zh = [r for r in rows if not r.title_zh]
+        if missing_zh:
+            try:
+                from polybot.collect.feed_collector import _translate_batch
+
+                tr = _translate_batch([(r.title_en or r.title) for r in missing_zh])
+                for r, t in zip(missing_zh, tr):
+                    if t:
+                        r.title_zh = t.get("zh") or r.title_zh
+                        r.title_en = r.title_en or t.get("en")
+                session.commit()
+            except Exception as exc:
+                logger.debug("中文标题补译失败（不影响出报）: {}", exc)
+
         for r in rows:
-            title = r.title_en or r.title
+            title = r.title_zh or r.title_en or r.title
             var_ids = json.loads(r.variable_ids_json) if r.variable_ids_json else []
             tier = _TIER_LABEL.get(r.tier or "", r.tier)
             data.facts.append({

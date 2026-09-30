@@ -86,8 +86,10 @@ def _clean_google_news_title(title: str) -> tuple[str, str | None]:
     return title.strip(), None
 
 
-def _translate_batch(titles: list[str]) -> list[str | None]:
-    """批量翻译到英文。优先 LLM（一次调用翻整批），失败逐条 deep-translator，再失败返回 None。"""
+def _translate_batch(titles: list[str]) -> list[dict]:
+    """批量翻译：每条返回 {"en": ..., "zh": ...}（en=管线内语言，zh=展示层）。
+    LLM 一次调用翻整批；失败逐条 deep-translator（仅 en）；再失败 {}。
+    """
     if not titles:
         return []
     # 1) LLM 批量
@@ -97,27 +99,27 @@ def _translate_batch(titles: list[str]) -> list[str | None]:
         user_prompt = "\n".join(f'{{"i":{i},"title":{json.dumps(t, ensure_ascii=False)}}}'
                                 for i, t in enumerate(titles))
         parsed = chat_json(
-            "You are a translation engine. Translate each headline to English. "
-            "Keep proper nouns (names/parties). Respond ONLY a JSON array like "
-            '[{"i":0,"en":"..."},...]. No prose.',
-            user_prompt, max_tokens=2000,
+            "You are a translation engine. For each headline, translate to English AND to "
+            "Simplified Chinese. Keep proper nouns (names/parties). Respond ONLY a JSON array "
+            'like [{"i":0,"en":"...","zh":"..."}]. No prose.',
+            user_prompt, max_tokens=3000,
         )
         if isinstance(parsed, list):
-            out: dict[int, str] = {}
+            out: dict[int, dict] = {}
             for x in parsed:
-                if isinstance(x, dict) and isinstance(x.get("i"), int) and x.get("en"):
-                    out[x["i"]] = str(x["en"])
+                if isinstance(x, dict) and isinstance(x.get("i"), int) and (x.get("en") or x.get("zh")):
+                    out[x["i"]] = {"en": x.get("en"), "zh": x.get("zh")}
             return [out.get(i) for i in range(len(titles))]
     except Exception as exc:
         logger.debug("LLM 批量翻译失败: {}", exc)
-    # 2) deep-translator 逐条
-    results: list[str | None] = []
+    # 2) deep-translator 逐条（仅 en）
+    results: list[dict] = []
     for t in titles:
         try:
             from deep_translator import GoogleTranslator
-            results.append(GoogleTranslator(source="auto", target="en").translate(t))
+            results.append({"en": GoogleTranslator(source="auto", target="en").translate(t), "zh": None})
         except Exception:
-            results.append(None)
+            results.append({})
     return results
 
 
@@ -172,7 +174,7 @@ class FeedCollector:
 
                 new_items = result.new_items[: self.max_items_per_feed]
 
-                # 批量翻译（LLM 一次翻整批；失败逐条 deep-translator；再失败留原文）
+                # 批量翻译（LLM 一次翻整批 → en+zh；失败降级；再失败留原文）
                 to_translate = [it.title for it in new_items
                                 if self.translate and feed["lang"] != "en"
                                 and stats.translated < self.translate_cap]
@@ -183,9 +185,10 @@ class FeedCollector:
 
                 t_iter = iter(translations)
                 for item in new_items:
-                    title_en = None
-                    if self.translate and feed["lang"] != "en" and stats.translated <= self.translate_cap:
-                        title_en = next(t_iter, None)
+                    tr = next(t_iter, None) if (self.translate and feed["lang"] != "en"
+                                                and stats.translated <= self.translate_cap) else None
+                    title_en = (tr or {}).get("en")
+                    title_zh = (tr or {}).get("zh")
 
                     simhash_hex = _simhash_hex(item.title)
                     orm = NewsItemORM(
@@ -201,6 +204,7 @@ class FeedCollector:
                         tier=feed["tier"],
                         lang=feed["lang"],
                         title_en=title_en,
+                        title_zh=title_zh,
                     )
                     session.add(orm)
                     existing_hashes.add(item.url_hash)
