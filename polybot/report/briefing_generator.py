@@ -172,10 +172,26 @@ def gather_data(election_cfg_path: Path, narrative_cfg_path: Path,
 
         for var in ecfg["key_variables"]:
             n = hit_today.get(var["id"], 0)
+            # 每个变量的最新证据（账本现算）：近 7 天内该变量下新颖度最高的一条
+            latest = session.execute(
+                select(NewsItemORM)
+                .where(NewsItemORM.triage_relevant == 1)
+                .where(NewsItemORM.variable_ids_json.like(f'%"{var["id"]}"%'))
+                .where(NewsItemORM.created_at >= _now_utc() - timedelta(days=7))
+                .order_by(NewsItemORM.novelty.desc(), NewsItemORM.created_at.desc())
+                .limit(1)
+            ).scalar_one_or_none()
+            latest_text = ""
+            if latest is not None:
+                lt = (latest.title_en or latest.title)[:70]
+                lt_time = (latest.published_at or latest.created_at).strftime("%m-%d")
+                latest_text = f"{lt}（{lt_time}）"
+
             data.variables.append({
                 "id": var["id"],
                 "label": var["label"],
                 "state": var["state"],
+                "latest": latest_text,
                 "flag": "up" if n > 0 else "flat",
                 "flag_text": f"↑ {n} 条相关" if n > 0 else "无更新",
             })
@@ -246,8 +262,10 @@ def render_index(data: BriefingData, reports_history: list[str]) -> str:
     ) or '<li class="q">——</li>'
 
     var_rows = "\n".join(
-        f'<tr><td>{i + 1}</td><td>{_esc(v["label"])}</td><td>{_esc(v["state"])}</td>'
-        f'<td class="{v["flag"]}">{_esc(v["flag_text"])}</td></tr>'
+        f'<tr><td>{i + 1}</td><td>{_esc(v["label"])}</td>'
+        f'<td>{_esc(v["state"])}'
+        + (f'<br><span class="q">最新：{_esc(v["latest"])}</span>' if v.get("latest") else '')
+        + f'</td><td class="{v["flag"]}">{_esc(v["flag_text"])}</td></tr>'
         for i, v in enumerate(data.variables)
     )
 

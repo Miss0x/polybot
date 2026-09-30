@@ -19,7 +19,7 @@ key_variables:
     keywords: ["izbori", "election date", "raspuštanje", "raspustanje", "parlament"]
   - id: vucic_resignation
     label: "武契奇辞任总统"
-    state: "宣布将辞任参选，时点待确认"
+    state: "已辞去总统职务（9/27 全国电视讲话宣布）→ 宪法要求 90 天内总统补选"
     keywords: ["vučić", "vucic", "ostavka", "predsednik", "president resign"]
   - id: polls_sns_vs_students
     label: "SNS vs 学生名单民调"
