@@ -14,7 +14,7 @@ from pathlib import Path
 import httpx
 from loguru import logger
 
-_ROOT = Path(__file__).resolve().parent.parent.parent
+_ROOT = Path(__file__).resolve().parent.parent  # polybot 项目根目录
 
 
 def _load_env() -> None:
@@ -43,7 +43,8 @@ def _detect_provider() -> tuple[str, str, str] | None:
     for env_name, base, model in _PROVIDERS:
         key = os.environ.get(env_name, "").strip()
         if key:
-            return (key, base, model)
+            # LLM_MODEL 环境变量可覆盖默认模型（如中转站的 MiniMax-M3）
+            return (key, base, os.environ.get("LLM_MODEL", "").strip() or model)
     return None
 
 
