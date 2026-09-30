@@ -1,0 +1,44 @@
+# =============================================================================
+# romania_2025_replay.yaml — 盲测回放靶场：罗马尼亚 2025-05-18 总统决选
+#
+# 背景（公开可查）：原 2024-12 选举被宪法法院废止（Georgescu 首轮胜出+TikTok 影响指控），
+# 重选定档 2025-05-04/18；Georgescu 被选举局禁赛（3/9）；首轮 Simion 40.9% 大幅领先
+# Dan 20.9%（爆冷），Antonescu 27% 出局后背书 Dan；决选 Dan 以 53.6% vs 46.4% 翻盘。
+# Polymarket 主市场 "Romania Presidential Election Winner" 成交 $2.34 亿。
+# =============================================================================
+election_id: romania_2025_replay
+vote_date: "2025-05-18"
+
+wiki_polls_url: "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2025_Romanian_presidential_election"
+
+market:
+  gamma_market_id: "519068"          # Will Nicușor Dan win the Romanian presidential election?
+  question: "Will Nicușor Dan win the Romanian presidential election?"
+  note: "Yes 价 = Dan 胜选隐含概率；历史日线 122 点（2025-01-18 ~ 05-18）"
+
+# 时间截面（T-13 / T-7 / T-3 / T-1）
+checkpoints: ["2025-05-05", "2025-05-11", "2025-05-15", "2025-05-17"]
+
+# 判断题（回放只有这一道主判断）
+questions:
+  - id: dan_wins
+    question: "Will Nicușor Dan win the 2025-05-18 Romanian presidential runoff?"
+    question_cn: "Nicușor Dan 会赢得 5/18 总统决选吗？"
+    outcome: "yes"    # 结算真值（回放揭晓页用）
+
+# 上下文事实（as_of 日期门控：截面日期 >= as_of 才进证据包）
+context_facts:
+  - as_of: "2024-12-06"
+    text: "Constitutional Court annulled the original Dec 2024 election after declassified intel alleged a coordinated TikTok influence campaign for Călin Georgescu."
+  - as_of: "2025-03-09"
+    text: "Electoral Bureau banned Călin Georgescu from the May rerun; his voters (23%+ in polls) needed a new home."
+  - as_of: "2025-05-05"
+    text: "First round (May 4): George Simion (AUR) won 40.9%, Nicușor Dan 20.9% — Simion led by 20 points; Crin Antonescu (~27%) eliminated."
+  - as_of: "2025-05-06"
+    text: "Antonescu and most eliminated candidates endorsed Dan; Bucharest mayor Daniel Băluță (PSD) also endorsed Dan."
+  - as_of: "2025-05-07"
+    text: "Diaspora vote in round 1 was heavily for Dan (large margins in Western Europe) — diaspora turnout surged vs 2024."
+  - as_of: "2025-05-11"
+    text: "Simion campaigned as anti-establishment; AUR allies raised fraud pre-claims; Dan positioned the runoff as 'Romania's choice between East and West'."
+  - as_of: "2025-05-16"
+    text: "Turnout models suggested higher-than-2024 diaspora registration; exit-poll providers had no round-2 track record."
